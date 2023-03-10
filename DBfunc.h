@@ -2,10 +2,10 @@
 struct Auto{
 	int nr_samochodu;
 	int rejestracja;
-	char[20] marka;
-	char[50] model;
+	char marka[20];
+	char model[50];
 	int rok;
-	char[10] kolor;
+	char kolor[10];
 	int przebieg;
 
 };
@@ -13,9 +13,9 @@ struct Auto{
 struct Osoba{
 	int nr_klienta;
 	int karta;
-	char[20] imie;
-	char[50] nazwisko;
-	char[50] adres;
+	char* imie;
+	char* nazwisko;
+	char* adres;
 	int telefon;
 };
 
@@ -30,4 +30,17 @@ struct Wypozyczenia{
 
 };
 
-
+void SaveOsoba(struct Osoba  osoba){
+	FILE* plik = fopen("Osoby.txt","a+");
+	if(plik==NULL){
+		puts("Blad zapisu w pliku");
+	}
+	else{
+	fprintf(plik,"%d;",osoba.nr_klienta);
+	fprintf(plik,"%d;",osoba.karta);
+	fprintf(plik,"%s;",osoba.imie);
+	fprintf(plik,"%s;",osoba.nazwisko);
+	fprintf(plik,"%s;",osoba.adres);
+	fprintf(plik,"%d\n",osoba.telefon);
+	}
+}
