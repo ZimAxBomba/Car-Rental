@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "DBfunc.h"
 int main(){
-
+/*
 	struct Osoba o;
 	o.nr_klienta = 1;
 	o.karta = 9120387;
@@ -23,4 +23,24 @@ int main(){
 
 
 	return 0;
+	*/
+
+	struct Osoba o;
+	o.nr_klienta=0;
+	//Uzycie referencji aby zmienic oryginalna wartosc
+	LoadOsoba(&o);
+	printf("%d",o.nr_klienta);
+	puts("\n");
+	printf("%d",o.karta);
+	puts("\n");
+	printf("%s",o.imie);
+	puts("\n");
+	printf("%s",o.nazwisko);
+	puts("\n");
+	printf("%s",o.adres);
+	puts("\n");
+	printf("%d",o.telefon);
+	puts("\n");
+	return 0;
+
 }
