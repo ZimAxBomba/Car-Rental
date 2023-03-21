@@ -28,7 +28,7 @@ int main(){
 	struct Osoba o;
 	o.nr_klienta=0;
 	//Uzycie referencji aby zmienic oryginalna wartosc
-	LoadOsoba(&o);
+	int pos = LoadOsoba(&o,0);
 	printf("%d",o.nr_klienta);
 	puts("\n");
 	printf("%d",o.karta);
@@ -41,6 +41,23 @@ int main(){
 	puts("\n");
 	printf("%d",o.telefon);
 	puts("\n");
+	
+	LoadOsoba(&o,pos);
+	printf("%d",o.nr_klienta);
+	puts("\n");
+	printf("%d",o.karta);
+	puts("\n");
+	printf("%s",o.imie);
+	puts("\n");
+	printf("%s",o.nazwisko);
+	puts("\n");
+	printf("%s",o.adres);
+	puts("\n");
+	printf("%d",o.telefon);
+	puts("\n");
+
+
+
 	return 0;
 
 }

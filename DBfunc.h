@@ -1,30 +1,30 @@
 #include <string.h>
 struct Auto{
-	int nr_samochodu;
-	int rejestracja;
+	unsigned int nr_samochodu;
+	unsigned int rejestracja;
 	char marka[20];
 	char model[50];
-	int rok;
+	unsigned int rok;
 	char kolor[10];
-	int przebieg;
+	unsigned int przebieg;
 
 };
 
 struct Osoba{
-	int nr_klienta;
-	int karta;
+	unsigned int nr_klienta;
+	unsigned int karta;
 	char imie[20];
 	char nazwisko[50];
 	char adres[50];
-	int telefon;
+	unsigned int telefon;
 };
 
 struct Wypozyczenia{
-	int nr_wyp;
-	int nr_klienta;
-	int nr_samochodu;
-	int data_wyp;
-	int data_zwrotu;
+	unsigned int nr_wyp;
+	unsigned int nr_klienta;
+	unsigned int nr_samochodu;
+	unsigned int data_wyp;
+	unsigned int data_zwrotu;
 	float kaucja;
 	float cena;
 
@@ -43,6 +43,7 @@ void SaveOsoba(struct Osoba osoba){
 	fprintf(plik,"%s ",osoba.adres);
 	fprintf(plik,"%d\n",osoba.telefon);
 	}
+	fclose(plik);
 }
 
 void SaveAuto(struct Auto a){
@@ -58,7 +59,8 @@ void SaveAuto(struct Auto a){
 		fprintf(plik,"%s ",a.kolor);
 		fprintf(plik,"%d\n",a.przebieg);
 		}
-	}
+	fclose(plik);
+}
 
 
 void SaveWypozyczenie(struct Wypozyczenia w){
@@ -75,10 +77,12 @@ void SaveWypozyczenie(struct Wypozyczenia w){
 		fprintf(plik,"%d\n",w.cena);
 
 	}
+	fclose(plik);
 }
 
-void LoadOsoba(struct Osoba *o){
+int LoadOsoba(struct Osoba *o,int pos){
 	FILE* plik = fopen("Osoby.txt","r");
+	fseek(plik,pos,SEEK_SET);
 	if(plik==NULL)
 		puts("Blad odycztu pliku");
 	else{
@@ -89,9 +93,13 @@ void LoadOsoba(struct Osoba *o){
 		fscanf(plik,"%s",&o->adres);
 		fscanf(plik,"%d",&o->telefon);
 	}
+	pos = ftell(plik);
+	fclose(plik);
+	return pos; 
 }
-void LoadAuto(struct Auto *a){
+int LoadAuto(struct Auto *a,int pos){
 	FILE* plik = fopen("Auta.txt","r");
+	fseek(plik,pos,SEEK_SET);
 	if(plik==NULL)
 		puts("Blad odycztu pliku");
 	else{
@@ -103,9 +111,13 @@ void LoadAuto(struct Auto *a){
 		fscanf(plik,"%s",&a->kolor);
 		fscanf(plik,"%d",&a->przebieg);
 	}
+	pos = ftell(plik);
+	fclose(plik);
+	return pos;
 }
-void LoadWypozyczenie(struct Wypozyczenia *w){
+int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 	FILE* plik = fopen("Wypozyczenia.txt","r");
+	fseek(plik,pos,SEEK_SET);
 	if(plik==NULL)
 		puts("Blad odycztu pliku");
 	else{
@@ -117,4 +129,20 @@ void LoadWypozyczenie(struct Wypozyczenia *w){
 		fscanf(plik,"%d",&w->kaucja);
 		fscanf(plik,"%d",&w->cena);
 	}
+	pos = ftell(plik);
+	fclose(plik);
+	return pos;
+}
+
+unsigned int CountLines(char plik[20]){
+	FILE *p = fopen(plik,"r");
+	unsigned int lines = 0;
+	char c;
+	do{
+		c = getc(p);
+		if(c=='\n')
+			lines++;
+	}while(c!=EOF);
+	fclose(p);
+	return lines;
 }
