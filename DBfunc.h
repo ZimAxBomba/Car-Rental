@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 struct Auto{
 	unsigned int nr_samochodu;
 	unsigned int rejestracja;
@@ -145,4 +146,23 @@ unsigned int CountLines(char plik[20]){
 	}while(c!=EOF);
 	fclose(p);
 	return lines;
+}
+void InitTableOsoby(struct Osoba **tOsoby){
+//alokuje pamiec dla *tOsoby
+	int lines = CountLines("Osoby.txt");
+	*tOsoby = (struct Osoba*)malloc(lines*sizeof(struct Osoba));
+	if(*tOsoby==NULL)
+		puts("Inicializacjia tablicy Osob nie powidodla sie");
+
+//wczytuje wszystkie osoby do tablicy
+	int pos=0;
+	int pos2=0;
+	struct Osoba temp;
+	//Zaczyna od 2 lini?>?????>???
+	//to chyba przez &
+	for(int i=0;i<lines;i++){
+		pos = LoadOsoba(&temp,pos2);
+		pos2=pos;
+		tOsoby[i]=&temp;
+	}
 }

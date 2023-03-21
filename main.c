@@ -23,7 +23,7 @@ int main(){
 
 
 	return 0;
-	*/
+	
 
 	struct Osoba o;
 	o.nr_klienta=0;
@@ -56,8 +56,13 @@ int main(){
 	printf("%d",o.telefon);
 	puts("\n");
 
-
-
+	//InitTableOsoby(rozmiar,*tablica);
+	*/
+	struct Osoba *tOsoby;
+	InitTableOsoby(&tOsoby);
+	
+	printf("%d",tOsoby[0].karta);
+	printf("\n%d",tOsoby[1].karta);
 	return 0;
 
 }
