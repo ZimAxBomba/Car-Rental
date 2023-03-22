@@ -61,8 +61,8 @@ int main(){
 	struct Osoba *tOsoby;
 	InitTableOsoby(&tOsoby);
 	
-	printf("%d",tOsoby[0].karta);
-	printf("\n%d",tOsoby[1].karta);
+	//printf("%d",tOsoby[0].nr_klienta);
+	//printf("\n%d",tOsoby[1].nr_klienta);
 	return 0;
 
 }

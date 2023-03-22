@@ -150,19 +150,22 @@ unsigned int CountLines(char plik[20]){
 void InitTableOsoby(struct Osoba **tOsoby){
 //alokuje pamiec dla *tOsoby
 	int lines = CountLines("Osoby.txt");
-	*tOsoby = (struct Osoba*)malloc(lines*sizeof(struct Osoba));
+	*tOsoby = malloc(lines*sizeof(struct Osoba));
 	if(*tOsoby==NULL)
 		puts("Inicializacjia tablicy Osob nie powidodla sie");
 
 //wczytuje wszystkie osoby do tablicy
 	int pos=0;
-	int pos2=0;
 	struct Osoba temp;
-	//Zaczyna od 2 lini?>?????>???
-	//to chyba przez &
 	for(int i=0;i<lines;i++){
-		pos = LoadOsoba(&temp,pos2);
-		pos2=pos;
-		tOsoby[i]=&temp;
+		printf("%d",pos);
+		pos = LoadOsoba(&temp,pos);
+		//tOsoby[i]->nr_klienta = 12;
+		//printf("\n%d\n",tOsoby[i]->nr_klienta);
+		//temp dziala
+
+		//Segmentation fault
+		tOsoby[i]->nr_klienta = temp.nr_klienta;
+		printf("\n%d\n",tOsoby[i]->nr_klienta);
 	}
 }
