@@ -158,14 +158,56 @@ void InitTableOsoby(struct Osoba **tOsoby){
 	int pos=0;
 	struct Osoba temp;
 	for(int i=0;i<lines;i++){
-		printf("%d",pos);
 		pos = LoadOsoba(&temp,pos);
-		//tOsoby[i]->nr_klienta = 12;
-		//printf("\n%d\n",tOsoby[i]->nr_klienta);
-		//temp dziala
+		(*tOsoby)[i].nr_klienta = temp.nr_klienta;
+		(*tOsoby)[i].karta = temp.karta;
+		memcpy((*tOsoby)[i].imie,temp.imie,sizeof(temp.imie));
+		memcpy((*tOsoby)[i].nazwisko,temp.nazwisko,sizeof(temp.nazwisko));
+		memcpy((*tOsoby)[i].adres,temp.adres,sizeof(temp.adres));
+		(*tOsoby)[i].telefon = temp.telefon;
+	}
+}
 
-		//Segmentation fault
-		tOsoby[i]->nr_klienta = temp.nr_klienta;
-		printf("\n%d\n",tOsoby[i]->nr_klienta);
+void InitTableAuta(struct Auto **tAuta){
+//alokuje pamiec dla *tAuta
+	int lines = CountLines("Auta.txt");
+	*tAuta = malloc(lines*sizeof(struct Auto));
+	if(*tAuta==NULL)
+		puts("Inicializacjia tablicy Aut nie powidodla sie");
+
+//wczytuje wszystkie osoby do tablicy
+	int pos=0;
+	struct Auto temp;
+	for(int i=0;i<lines;i++){
+		pos = LoadAuto(&temp,pos);
+		(*tAuta)[i].nr_samochodu = temp.nr_samochodu;
+		(*tAuta)[i].rejestracja = temp.rejestracja;
+		memcpy((*tAuta)[i].marka,temp.marka,sizeof(temp.marka));
+		memcpy((*tAuta)[i].model,temp.model,sizeof(temp.model));
+		(*tAuta)[i].rok = temp.rok;
+		memcpy((*tAuta)[i].kolor,temp.kolor,sizeof(temp.kolor));
+		(*tAuta)[i].przebieg = temp.przebieg;
+	}
+}
+
+void InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
+//alokuje pamiec dla *tWypozyczenia
+	int lines = CountLines("Wypozyczenia.txt");
+	*tWypozyczenia = malloc(lines*sizeof(struct Wypozyczenia));
+	if(*tWypozyczenia==NULL)
+		puts("Inicializacjia tablicy Wypozyczen nie powidodla sie");
+
+//wczytuje wszystkie osoby do tablicy
+	int pos=0;
+	struct Wypozyczenia temp;
+	for(int i=0;i<lines;i++){
+		pos = LoadWypozyczenie(&temp,pos);
+		(*tWypozyczenia)[i].nr_wyp = temp.nr_wyp;
+		(*tWypozyczenia)[i].nr_klienta = temp.nr_klienta;
+		(*tWypozyczenia)[i].nr_samochodu = temp.nr_samochodu;
+		(*tWypozyczenia)[i].data_wyp = temp.data_wyp;
+		(*tWypozyczenia)[i].data_zwrotu= temp.data_zwrotu;
+		(*tWypozyczenia)[i].kaucja = temp.kaucja;
+		(*tWypozyczenia)[i].cena = temp.cena;
 	}
 }
