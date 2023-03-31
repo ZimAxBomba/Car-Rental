@@ -98,6 +98,38 @@ int LoadOsoba(struct Osoba *o,int pos){
 	fclose(plik);
 	return pos; 
 }
+//alt
+int LoadOsobaAlt(struct Osoba *o,int pos){
+	FILE* plik = fopen("Osoby.txt","r");
+	fseek(plik,pos,SEEK_SET);
+	if(plik==NULL)
+		puts("Blad odczytu pliku");
+	else{
+		char string[200];
+		fgets(string,200,plik);
+		//printf("%s\n",string);
+		//more robust than scanf()
+		char *temp = strtok(string,";");
+		/*
+		while(temp!=NULL){
+			printf("%s\n",temp);
+			temp = strtok(NULL,";");
+		}
+		*/
+		o->nr_klienta=atoi(temp);
+		temp = strtok(NULL,";");
+		o->karta=atoi(temp);
+		temp = strtok(NULL,";");
+		memcpy(o->imie,temp,sizeof(o->imie));
+		temp = strtok(NULL,";");
+		memcpy(o->nazwisko,temp,sizeof(o->nazwisko));
+		temp = strtok(NULL,";");
+		memcpy(o->adres,temp,sizeof(o->adres));
+		temp = strtok(NULL,";");
+		o->telefon=atoi(temp);
+	}
+}
+
 int LoadAuto(struct Auto *a,int pos){
 	FILE* plik = fopen("Auta.txt","r");
 	fseek(plik,pos,SEEK_SET);
@@ -147,7 +179,7 @@ unsigned int CountLines(char plik[20]){
 	fclose(p);
 	return lines;
 }
-void InitTableOsoby(struct Osoba **tOsoby){
+int InitTableOsoby(struct Osoba **tOsoby){
 //alokuje pamiec dla *tOsoby
 	int lines = CountLines("Osoby.txt");
 	*tOsoby = malloc(lines*sizeof(struct Osoba));
@@ -166,16 +198,17 @@ void InitTableOsoby(struct Osoba **tOsoby){
 		memcpy((*tOsoby)[i].adres,temp.adres,sizeof(temp.adres));
 		(*tOsoby)[i].telefon = temp.telefon;
 	}
+	return lines;
 }
 
-void InitTableAuta(struct Auto **tAuta){
+int InitTableAuta(struct Auto **tAuta){
 //alokuje pamiec dla *tAuta
 	int lines = CountLines("Auta.txt");
 	*tAuta = malloc(lines*sizeof(struct Auto));
 	if(*tAuta==NULL)
 		puts("Inicializacjia tablicy Aut nie powidodla sie");
 
-//wczytuje wszystkie osoby do tablicy
+//wczytuje wszystkie Auta do tablicy
 	int pos=0;
 	struct Auto temp;
 	for(int i=0;i<lines;i++){
@@ -188,16 +221,17 @@ void InitTableAuta(struct Auto **tAuta){
 		memcpy((*tAuta)[i].kolor,temp.kolor,sizeof(temp.kolor));
 		(*tAuta)[i].przebieg = temp.przebieg;
 	}
+	return lines;
 }
 
-void InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
+int InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
 //alokuje pamiec dla *tWypozyczenia
 	int lines = CountLines("Wypozyczenia.txt");
 	*tWypozyczenia = malloc(lines*sizeof(struct Wypozyczenia));
 	if(*tWypozyczenia==NULL)
 		puts("Inicializacjia tablicy Wypozyczen nie powidodla sie");
 
-//wczytuje wszystkie osoby do tablicy
+//wczytuje wszystkie wypozyczenia do tablicy
 	int pos=0;
 	struct Wypozyczenia temp;
 	for(int i=0;i<lines;i++){
@@ -210,4 +244,22 @@ void InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
 		(*tWypozyczenia)[i].kaucja = temp.kaucja;
 		(*tWypozyczenia)[i].cena = temp.cena;
 	}
+	return lines;
+}
+
+int AddOsoba(struct Osoba temp,struct Osoba **tOsoby,int lines){
+	*tOsoby = realloc(*tOsoby,(lines+1)*sizeof(struct Osoba));
+
+	(*tOsoby)[lines].nr_klienta = temp.nr_klienta;
+		(*tOsoby)[lines].karta = temp.karta;
+		memcpy((*tOsoby)[lines].imie,temp.imie,sizeof(temp.imie));
+		memcpy((*tOsoby)[lines].nazwisko,temp.nazwisko,sizeof(temp.nazwisko));
+		memcpy((*tOsoby)[lines].adres,temp.adres,sizeof(temp.adres));
+		(*tOsoby)[lines].telefon = temp.telefon;
+		return lines+1;
+}
+
+int RemoveOsoba(int index,struct Osoba **tOsoby,int lines){
+//albo wyzerowac element i uwzglednic to przy zapisywaniu
+//albo cofnac cala tablice o jeden i realokowac
 }

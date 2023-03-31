@@ -24,25 +24,12 @@ int main(){
 
 	return 0;
 	
-
+*/
 	struct Osoba o;
-	o.nr_klienta=0;
 	//Uzycie referencji aby zmienic oryginalna wartosc
-	int pos = LoadOsoba(&o,0);
-	printf("%d",o.nr_klienta);
-	puts("\n");
-	printf("%d",o.karta);
-	puts("\n");
-	printf("%s",o.imie);
-	puts("\n");
-	printf("%s",o.nazwisko);
-	puts("\n");
-	printf("%s",o.adres);
-	puts("\n");
-	printf("%d",o.telefon);
-	puts("\n");
-	
-	LoadOsoba(&o,pos);
+	int pos = LoadOsobaAlt(&o,0);
+	///*
+	//LoadOsobaAlt(&o,pos);
 	printf("%d",o.nr_klienta);
 	puts("\n");
 	printf("%d",o.karta);
@@ -57,10 +44,10 @@ int main(){
 	puts("\n");
 
 	//InitTableOsoby(rozmiar,*tablica);
-	*/
+	/*
 	struct Osoba *tOsoby;
 	InitTableOsoby(&tOsoby);
-	
+	*/
 	//printf("%d",tOsoby[0].nr_klienta);
 	//printf("\n%d",tOsoby[1].nr_klienta);
 	return 0;
