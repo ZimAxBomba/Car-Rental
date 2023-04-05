@@ -1,0 +1,1 @@
+1;1234;marka;model;1456;kolor;63443

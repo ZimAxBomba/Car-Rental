@@ -80,7 +80,7 @@ void SaveWypozyczenie(struct Wypozyczenia w){
 	}
 	fclose(plik);
 }
-
+/*
 int LoadOsoba(struct Osoba *o,int pos){
 	FILE* plik = fopen("Osoby.txt","r");
 	fseek(plik,pos,SEEK_SET);
@@ -98,8 +98,8 @@ int LoadOsoba(struct Osoba *o,int pos){
 	fclose(plik);
 	return pos; 
 }
-//alt
-int LoadOsobaAlt(struct Osoba *o,int pos){
+*/
+int LoadOsoba(struct Osoba *o,int pos){
 	FILE* plik = fopen("Osoby.txt","r");
 	fseek(plik,pos,SEEK_SET);
 	if(plik==NULL)
@@ -134,6 +134,33 @@ int LoadAuto(struct Auto *a,int pos){
 	FILE* plik = fopen("Auta.txt","r");
 	fseek(plik,pos,SEEK_SET);
 	if(plik==NULL)
+		puts("Blad odczytu pliku");
+	else{
+		char string[200];
+		fgets(string,200,plik);
+		char *temp = strtok(string,";");
+		
+		a->nr_samochodu=atoi(temp);
+		temp = strtok(NULL,";");
+		a->rejestracja=atoi(temp);
+		temp = strtok(NULL,";");
+		memcpy(a->marka,temp,sizeof(a->marka));
+		temp = strtok(NULL,";");
+		memcpy(a->model,temp,sizeof(a->model));
+		temp = strtok(NULL,";");
+		a->rok = atoi(temp);
+		temp = strtok(NULL,";");
+		memcpy(a->kolor,temp,sizeof(a->kolor));
+		temp = strtok(NULL,";");
+		a->przebieg = atoi(temp);
+	}
+}
+
+/*
+int LoadAuto(struct Auto *a,int pos){
+	FILE* plik = fopen("Auta.txt","r");
+	fseek(plik,pos,SEEK_SET);
+	if(plik==NULL)
 		puts("Blad odycztu pliku");
 	else{
 		fscanf(plik,"%d",&a->nr_samochodu);
@@ -148,6 +175,34 @@ int LoadAuto(struct Auto *a,int pos){
 	fclose(plik);
 	return pos;
 }
+*/
+
+int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
+	FILE* plik = fopen("Wypozyczenia.txt","r");
+	fseek(plik,pos,SEEK_SET);
+	if(plik==NULL)
+		puts("Blad odczytu pliku");
+	else{
+		char string[200];
+		fgets(string,200,plik);
+		char *temp = strtok(string,";");
+		
+		w->nr_wyp=atoi(temp);
+		temp = strtok(NULL,";");
+		w->nr_klienta=atoi(temp);
+		temp = strtok(NULL,";");
+		w->nr_samochodu=atoi(temp);
+		temp = strtok(NULL,";");
+		w->data_wyp=atoi(temp);
+		temp = strtok(NULL,";");
+		w->data_zwrotu = atoi(temp);
+		temp = strtok(NULL,";");
+		w->kaucja = atoi(temp);
+		temp = strtok(NULL,";");
+		w->cena = atoi(temp);
+	}
+}
+/*
 int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 	FILE* plik = fopen("Wypozyczenia.txt","r");
 	fseek(plik,pos,SEEK_SET);
@@ -166,7 +221,7 @@ int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 	fclose(plik);
 	return pos;
 }
-
+*/
 unsigned int CountLines(char plik[20]){
 	FILE *p = fopen(plik,"r");
 	unsigned int lines = 0;
@@ -259,7 +314,126 @@ int AddOsoba(struct Osoba temp,struct Osoba **tOsoby,int lines){
 		return lines+1;
 }
 
-int RemoveOsoba(int index,struct Osoba **tOsoby,int lines){
-//albo wyzerowac element i uwzglednic to przy zapisywaniu
-//albo cofnac cala tablice o jeden i realokowac
+int AddAuto(struct Auto temp,struct Auto **tAuta,int lines){
+	*tAuta = realloc(*tAuta,(lines+1)*sizeof(struct Auto));
+
+	(*tAuta)[lines].nr_samochodu = temp.nr_samochodu;
+	(*tAuta)[lines].rejestracja = temp.rejestracja;
+	memcpy((*tAuta)[lines].marka,temp.marka,sizeof(temp.marka));
+	memcpy((*tAuta)[lines].model,temp.model,sizeof(temp.model));
+	(*tAuta)[lines].rok = temp.rok;
+	memcpy((*tAuta)[lines].kolor,temp.kolor,sizeof(temp.kolor));
+	(*tAuta)[lines].przebieg = temp.przebieg;
+		return lines+1;
+}
+
+int AddWypozyczenie(struct Wypozyczenia	temp,struct Wypozyczenia **tWypozyczenia,int lines){
+	*tWypozyczenia = realloc(*tWypozyczenia,(lines+1)*sizeof(struct Wypozyczenia));
+
+	(*tWypozyczenia)[lines].nr_wyp = temp.nr_wyp;
+	(*tWypozyczenia)[lines].nr_klienta = temp.nr_klienta;
+	(*tWypozyczenia)[lines].nr_samochodu = temp.nr_samochodu;
+	(*tWypozyczenia)[lines].data_wyp = temp.data_wyp;
+	(*tWypozyczenia)[lines].data_zwrotu = temp.data_zwrotu;
+	(*tWypozyczenia)[lines].kaucja = temp.kaucja;
+	(*tWypozyczenia)[lines].cena = temp.cena;
+		return lines+1;
+}
+
+void RemoveOsoba(int index,struct Osoba **tOsoby){
+	memcpy((*tOsoby)[index].imie,"DELETE",sizeof("DELETE"));
+}
+void RemoveAuto(int index,struct Auto **tAuta){
+	memcpy((*tAuta)[index].model,"DELETE",sizeof("DELETE"));
+}
+void RemoveWypozyczenie(int index,struct Wypozyczenia **tWypozyczenia){
+	(*tWypozyczenia)->cena = 0.0;
+}
+void WyswietlOsoba(struct Osoba **o,int lines){
+	for(int i=0;i<lines;i++){
+		printf("%d\t%d\t%s\t%s\t%s\t%d",
+				(*o)->nr_klienta,
+				(*o)->karta,
+				(*o)->imie,
+				(*o)->nazwisko,
+				(*o)->adres,
+				(*o)->telefon);
+	}
+}
+
+void WyswietlAuto(struct Auto **a,int lines){
+	for(int i=0;i<lines;i++){
+		printf("%d\t%d\t%s\t%s\t%d\t%s\t%d",
+				(*a)->nr_samochodu,
+				(*a)->rejestracja,
+				(*a)->marka,
+				(*a)->model,
+				(*a)->rok,
+				(*a)->kolor,
+				(*a)->przebieg);
+	}
+}
+void WyswietlWypoczyenie(struct Wypozyczenia **w,int lines){
+	for(int i=0;i<lines;i++){
+		printf("%d\t%d\t%d\t%d\t%d\t%d\t%d",
+				(*w)->nr_wyp,
+				(*w)->nr_klienta,
+				(*w)->nr_samochodu,
+				(*w)->data_wyp,
+				(*w)->data_zwrotu,
+				(*w)->kaucja,
+				(*w)->cena);
+	}
+}
+
+struct Osoba MakeOsoba(){
+	struct Osoba os;
+	printf("Podaj numer klienta: ");
+	scanf("%d",&os.nr_klienta);
+	printf("\nPodaj numer karty: ");
+	scanf("%d",&os.nr_klienta);
+	printf("\nPodaj imie: ");
+	scanf("%s",&os.imie);
+	printf("\nPodaj nazwisko: ");
+	scanf("%s",&os.nazwisko);
+	printf("\nPodaj adres: ");
+	scanf("%s",&os.adres);
+	printf("Podaj numer telefonu: ");
+	scanf("%d",&os.telefon);
+	return os;
+}
+
+struct Auto MakeAuto(){
+	struct Auto au;
+	printf("Podaj numer samochodu: ");
+	scanf("%d",&au.nr_samochodu);
+	printf("\nPodaj rejestracje: ");
+	scanf("%d",&au.rejestracja);
+	printf("\nPodaj marke: ");
+	scanf("%s",&au.marka);
+	printf("\nPodaj model: ");
+	scanf("%s",&au.model);
+	printf("\nPodaj rok: ");
+	scanf("%d",&au.rok);
+	printf("Podaj kolor: ");
+	scanf("%s",&au.kolor);
+	return au;
+}
+struct Wypozyczenia MakeWypozyczenia(){
+	struct Wypozyczenia wyp;
+	printf("Podaj nr. wypozyczenia: ");
+	scanf("%d",&wyp.nr_wyp);
+	printf("\nPodaj nr. klienta: ");
+	scanf("%d",&wyp.nr_klienta);
+	printf("\nPodaj nr. samochodu: ");
+	scanf("%d",&wyp.nr_samochodu);
+	printf("\nPodaj date wypozyczenia: ");
+	scanf("%d",&wyp.data_wyp);
+	printf("\nPodaj date zwrotu: ");
+	scanf("%d",&wyp.data_zwrotu);
+	printf("Podaj kacuje: ");
+	scanf("%d",&wyp.kaucja);
+	printf("Podaj cene");
+	scanf("%d",&wyp.cena);
+	return wyp;
 }

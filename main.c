@@ -1,55 +1,69 @@
 #include <stdio.h>
 #include "DBfunc.h"
+
+
+
 int main(){
-/*
-	struct Osoba o;
-	o.nr_klienta = 1;
-	o.karta = 9120387;
-	o.imie = "Tomek";
-	o.nazwisko = "Terka";
-	o.adres = "test";
-	o.telefon = 21378412;
+	int cmd;
+	int loop = 1;
+	int n;
 
-	SaveOsoba(o);
-
-	o.nr_klienta = 2;
-	o.karta = 1237641;
-	o.imie = "Andjrzej";
-	o.nazwisko = "Duda";
-	o.adres = "teseffefwef";
-	o.telefon = 9999999;
-
-	SaveOsoba(o);
-
-
-	return 0;
-	
-*/
-	struct Osoba o;
-	//Uzycie referencji aby zmienic oryginalna wartosc
-	int pos = LoadOsobaAlt(&o,0);
-	///*
-	//LoadOsobaAlt(&o,pos);
-	printf("%d",o.nr_klienta);
-	puts("\n");
-	printf("%d",o.karta);
-	puts("\n");
-	printf("%s",o.imie);
-	puts("\n");
-	printf("%s",o.nazwisko);
-	puts("\n");
-	printf("%s",o.adres);
-	puts("\n");
-	printf("%d",o.telefon);
-	puts("\n");
-
-	//InitTableOsoby(rozmiar,*tablica);
-	/*
+	int linesO=0;
+	int linesA=0;
+	int linesW=0;
 	struct Osoba *tOsoby;
-	InitTableOsoby(&tOsoby);
-	*/
-	//printf("%d",tOsoby[0].nr_klienta);
-	//printf("\n%d",tOsoby[1].nr_klienta);
-	return 0;
+	struct Auto *tAuta;
+	struct Wypozyczenia *tWypozyczenia;
+
+	puts("Ladowanie tablic");
+	linesO = InitTableOsoby(&tOsoby);
+	linesA = InitTableAuta(&tAuta);
+	linesW = InitTableWypozyczenia(&tWypozyczenia);
+	puts("\nTablice wczytane");
+
+
+	while(loop){
+		puts("\nPodaj komende:\n");
+		scanf("%d",&cmd);
+		switch(cmd){
+		default:
+			puts("Wpisz 0 aby wyswietlic pomoc, 9 aby wyjsc");
+			break;
+		case 0:
+			puts("1 - Osoba\n 2 - Auto\n 3 - Wypozyczenia\n");
+			puts("\n1(1,2,3) - wyswietl\n");
+			puts("2(1,2,3) - dodaj\n");
+			puts("3(1,2,3) - usun\n");
+			break;
+
+		case 11:
+			WyswietlOsoba(&tOsoby,linesO);
+			break;
+		case 12:
+			WyswietlAuto(&tAuta,linesA);
+			break;
+		case 13:
+			WyswietlWypoczyenie(&tWypozyczenia,linesW);
+			break;
+		case 21:
+			linesO = AddOsoba(MakeOsoba(),&tOsoby,linesO);
+			break;
+		case 22:
+			linesA = AddAuto(MakeAuto(),&tAuta,linesA);
+			break;
+		case 23:
+			linesW = AddWypozyczenie(MakeWypozyczenia(),&tWypozyczenia,linesW);
+			break;
+		case 31:
+			puts("Usunac ktory wiersz tablicy?: ");
+			scanf("%d",&n);
+			RemoveOsoba(n,&tOsoby);
+			break;
+		//tak dalej
+		case 9:
+			loop = 0;
+			break;
+		}
+	}
 
 }
