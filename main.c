@@ -65,5 +65,17 @@ int main(){
 			break;
 		}
 	}
-
+	puts("Zapisywanie plikow");
+	for(int i=0;i<linesO;i++){
+		Backup("Osoby.txt");
+		SaveOsoba(tOsoby[i]);
+	}
+	for(int i=0;i<linesA;i++){
+		Backup("Auta.txt");
+		SaveAuto(tAuta[i]);
+	}
+	for(int i=0;i<linesW;i++){
+		Backup("Wypozyczenia.txt");
+		SaveWypozyczenie(tWypozyczenia[i]);
+	}
 }

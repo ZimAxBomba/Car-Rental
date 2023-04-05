@@ -32,32 +32,32 @@ struct Wypozyczenia{
 };
 
 void SaveOsoba(struct Osoba osoba){
-	FILE* plik = fopen("Osoby.txt","a+");
+	FILE* plik = fopen("Osoby.txt","a");
 	if(plik==NULL){
 		puts("Blad zapisu w pliku");
 	}
 	else{
-	fprintf(plik,"%d ",osoba.nr_klienta);
-	fprintf(plik,"%d ",osoba.karta);
-	fprintf(plik,"%s ",osoba.imie);
-	fprintf(plik,"%s ",osoba.nazwisko);
-	fprintf(plik,"%s ",osoba.adres);
+	fprintf(plik,"%d;",osoba.nr_klienta);
+	fprintf(plik,"%d;",osoba.karta);
+	fprintf(plik,"%s;",osoba.imie);
+	fprintf(plik,"%s;",osoba.nazwisko);
+	fprintf(plik,"%s;",osoba.adres);
 	fprintf(plik,"%d\n",osoba.telefon);
 	}
 	fclose(plik);
 }
 
 void SaveAuto(struct Auto a){
-	FILE* plik = fopen("Auta.txt","a+");
+	FILE* plik = fopen("Auta.txt","a");
 	if(plik==NULL)
 		puts("Blad zapisu w pliku");
 	else{
-		fprintf(plik,"%d ",a.nr_samochodu);
-		fprintf(plik,"%d ",a.rejestracja);
-		fprintf(plik,"%s ",a.marka);
-		fprintf(plik,"%s ",a.model);
-		fprintf(plik,"%d ",a.rok);
-		fprintf(plik,"%s ",a.kolor);
+		fprintf(plik,"%d;",a.nr_samochodu);
+		fprintf(plik,"%d;",a.rejestracja);
+		fprintf(plik,"%s;",a.marka);
+		fprintf(plik,"%s;",a.model);
+		fprintf(plik,"%d;",a.rok);
+		fprintf(plik,"%s;",a.kolor);
 		fprintf(plik,"%d\n",a.przebieg);
 		}
 	fclose(plik);
@@ -65,16 +65,16 @@ void SaveAuto(struct Auto a){
 
 
 void SaveWypozyczenie(struct Wypozyczenia w){
-	FILE* plik = fopen("Wypozyczenia.txt","a+");
+	FILE* plik = fopen("Wypozyczenia.txt","a");
 	if(plik==NULL)
 		puts("Blad zapisu w pliku");
 	else{
-		fprintf(plik,"%d ",w.nr_wyp);
-		fprintf(plik,"%d ",w.nr_klienta);
-		fprintf(plik,"%d ",w.nr_samochodu);
-		fprintf(plik,"%d ",w.data_wyp);
-		fprintf(plik,"%d ",w.data_zwrotu);
-		fprintf(plik,"%d ",w.kaucja);
+		fprintf(plik,"%d;",w.nr_wyp);
+		fprintf(plik,"%d;",w.nr_klienta);
+		fprintf(plik,"%d;",w.nr_samochodu);
+		fprintf(plik,"%d;",w.data_wyp);
+		fprintf(plik,"%d;",w.data_zwrotu);
+		fprintf(plik,"%d;",w.kaucja);
 		fprintf(plik,"%d\n",w.cena);
 
 	}
@@ -107,6 +107,8 @@ int LoadOsoba(struct Osoba *o,int pos){
 	else{
 		char string[200];
 		fgets(string,200,plik);
+		pos = ftell(plik);
+		fclose(plik);
 		//printf("%s\n",string);
 		//more robust than scanf()
 		char *temp = strtok(string,";");
@@ -128,6 +130,7 @@ int LoadOsoba(struct Osoba *o,int pos){
 		temp = strtok(NULL,";");
 		o->telefon=atoi(temp);
 	}
+	return pos;
 }
 
 int LoadAuto(struct Auto *a,int pos){
@@ -138,6 +141,8 @@ int LoadAuto(struct Auto *a,int pos){
 	else{
 		char string[200];
 		fgets(string,200,plik);
+		pos = ftell(plik);
+		fclose(plik);
 		char *temp = strtok(string,";");
 		
 		a->nr_samochodu=atoi(temp);
@@ -154,6 +159,7 @@ int LoadAuto(struct Auto *a,int pos){
 		temp = strtok(NULL,";");
 		a->przebieg = atoi(temp);
 	}
+	return pos;
 }
 
 /*
@@ -185,6 +191,8 @@ int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 	else{
 		char string[200];
 		fgets(string,200,plik);
+		pos = ftell(plik);
+		fclose(plik);
 		char *temp = strtok(string,";");
 		
 		w->nr_wyp=atoi(temp);
@@ -201,6 +209,7 @@ int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 		temp = strtok(NULL,";");
 		w->cena = atoi(temp);
 	}
+	return pos;
 }
 /*
 int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
@@ -222,6 +231,12 @@ int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 	return pos;
 }
 */
+//czysci plik txt (zapisuje go jako backup - w przyszlosci)
+void Backup(char n[20]){
+	FILE *p = fopen(n,"r");
+	fclose(p);
+}
+
 unsigned int CountLines(char plik[20]){
 	FILE *p = fopen(plik,"r");
 	unsigned int lines = 0;
@@ -243,8 +258,9 @@ int InitTableOsoby(struct Osoba **tOsoby){
 
 //wczytuje wszystkie osoby do tablicy
 	int pos=0;
-	struct Osoba temp;
+	//struct Osoba temp;
 	for(int i=0;i<lines;i++){
+		struct Osoba temp;
 		pos = LoadOsoba(&temp,pos);
 		(*tOsoby)[i].nr_klienta = temp.nr_klienta;
 		(*tOsoby)[i].karta = temp.karta;
@@ -253,6 +269,7 @@ int InitTableOsoby(struct Osoba **tOsoby){
 		memcpy((*tOsoby)[i].adres,temp.adres,sizeof(temp.adres));
 		(*tOsoby)[i].telefon = temp.telefon;
 	}
+	puts(".");
 	return lines;
 }
 
@@ -265,8 +282,8 @@ int InitTableAuta(struct Auto **tAuta){
 
 //wczytuje wszystkie Auta do tablicy
 	int pos=0;
-	struct Auto temp;
 	for(int i=0;i<lines;i++){
+		struct Auto temp;
 		pos = LoadAuto(&temp,pos);
 		(*tAuta)[i].nr_samochodu = temp.nr_samochodu;
 		(*tAuta)[i].rejestracja = temp.rejestracja;
@@ -276,6 +293,7 @@ int InitTableAuta(struct Auto **tAuta){
 		memcpy((*tAuta)[i].kolor,temp.kolor,sizeof(temp.kolor));
 		(*tAuta)[i].przebieg = temp.przebieg;
 	}
+	puts(".");
 	return lines;
 }
 
@@ -288,8 +306,8 @@ int InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
 
 //wczytuje wszystkie wypozyczenia do tablicy
 	int pos=0;
-	struct Wypozyczenia temp;
 	for(int i=0;i<lines;i++){
+		struct Wypozyczenia temp;
 		pos = LoadWypozyczenie(&temp,pos);
 		(*tWypozyczenia)[i].nr_wyp = temp.nr_wyp;
 		(*tWypozyczenia)[i].nr_klienta = temp.nr_klienta;
@@ -299,6 +317,8 @@ int InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
 		(*tWypozyczenia)[i].kaucja = temp.kaucja;
 		(*tWypozyczenia)[i].cena = temp.cena;
 	}
+
+	puts(".");
 	return lines;
 }
 
@@ -351,38 +371,38 @@ void RemoveWypozyczenie(int index,struct Wypozyczenia **tWypozyczenia){
 }
 void WyswietlOsoba(struct Osoba **o,int lines){
 	for(int i=0;i<lines;i++){
-		printf("%d\t%d\t%s\t%s\t%s\t%d",
-				(*o)->nr_klienta,
-				(*o)->karta,
-				(*o)->imie,
-				(*o)->nazwisko,
-				(*o)->adres,
-				(*o)->telefon);
+		printf("%d\t%d\t%s\t%s\t%s\t%d\n",
+				(*o)[i].nr_klienta,
+				(*o)[i].karta,
+				(*o)[i].imie,
+				(*o)[i].nazwisko,
+				(*o)[i].adres,
+				(*o)[i].telefon);
 	}
 }
 
 void WyswietlAuto(struct Auto **a,int lines){
 	for(int i=0;i<lines;i++){
-		printf("%d\t%d\t%s\t%s\t%d\t%s\t%d",
-				(*a)->nr_samochodu,
-				(*a)->rejestracja,
-				(*a)->marka,
-				(*a)->model,
-				(*a)->rok,
-				(*a)->kolor,
-				(*a)->przebieg);
+		printf("%d\t%d\t%s\t%s\t%d\t%s\t%d\n",
+				(*a)[i].nr_samochodu,
+				(*a)[i].rejestracja,
+				(*a)[i].marka,
+				(*a)[i].model,
+				(*a)[i].rok,
+				(*a)[i].kolor,
+				(*a)[i].przebieg);
 	}
 }
 void WyswietlWypoczyenie(struct Wypozyczenia **w,int lines){
 	for(int i=0;i<lines;i++){
-		printf("%d\t%d\t%d\t%d\t%d\t%d\t%d",
-				(*w)->nr_wyp,
-				(*w)->nr_klienta,
-				(*w)->nr_samochodu,
-				(*w)->data_wyp,
-				(*w)->data_zwrotu,
-				(*w)->kaucja,
-				(*w)->cena);
+		printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+				(*w)[i].nr_wyp,
+				(*w)[i].nr_klienta,
+				(*w)[i].nr_samochodu,
+				(*w)[i].data_wyp,
+				(*w)[i].data_zwrotu,
+				(*w)[i].kaucja,
+				(*w)[i].cena);
 	}
 }
 
