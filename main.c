@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "DBfunc.h"
 
-
-
 int main(){
 	int cmd;
 	int loop = 1;
@@ -68,14 +66,20 @@ int main(){
 	puts("Zapisywanie plikow");
 	for(int i=0;i<linesO;i++){
 		Backup("Osoby.txt");
+		if(strcmp(tOsoby[i].imie,"DELETE"))
+			continue;
 		SaveOsoba(tOsoby[i]);
 	}
 	for(int i=0;i<linesA;i++){
 		Backup("Auta.txt");
+		if(strcmp(tAuta[i].model,"DELETE"))
+			continue;
 		SaveAuto(tAuta[i]);
 	}
 	for(int i=0;i<linesW;i++){
 		Backup("Wypozyczenia.txt");
+		if(tWypozyczenia[i].cena=0.0)
+			continue;
 		SaveWypozyczenie(tWypozyczenia[i]);
 	}
 }
