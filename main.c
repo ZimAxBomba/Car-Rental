@@ -64,21 +64,23 @@ int main(){
 		}
 	}
 	puts("Zapisywanie plikow");
+	Backup("Osoby.txt");
 	for(int i=0;i<linesO;i++){
-		Backup("Osoby.txt");
-		if(strcmp(tOsoby[i].imie,"DELETE"))
+		if(strcmp(tOsoby[i].imie,"DELETE")==0)
 			continue;
 		SaveOsoba(tOsoby[i]);
 	}
+
+	Backup("Auta.txt");
 	for(int i=0;i<linesA;i++){
-		Backup("Auta.txt");
-		if(strcmp(tAuta[i].model,"DELETE"))
+		if(strcmp(tAuta[i].model,"DELETE")==0)
 			continue;
 		SaveAuto(tAuta[i]);
 	}
+
+	Backup("Wypozyczenia.txt");
 	for(int i=0;i<linesW;i++){
-		Backup("Wypozyczenia.txt");
-		if(tWypozyczenia[i].cena=0.0)
+		if(tWypozyczenia[i].cena==0.0)
 			continue;
 		SaveWypozyczenie(tWypozyczenia[i]);
 	}

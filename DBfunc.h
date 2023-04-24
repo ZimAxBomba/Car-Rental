@@ -74,8 +74,8 @@ void SaveWypozyczenie(struct Wypozyczenia w){
 		fprintf(plik,"%d;",w.nr_samochodu);
 		fprintf(plik,"%d;",w.data_wyp);
 		fprintf(plik,"%d;",w.data_zwrotu);
-		fprintf(plik,"%d;",w.kaucja);
-		fprintf(plik,"%d\n",w.cena);
+		fprintf(plik,"%f;",w.kaucja);
+		fprintf(plik,"%f\n",w.cena);
 
 	}
 	fclose(plik);
@@ -205,9 +205,9 @@ int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 		temp = strtok(NULL,";");
 		w->data_zwrotu = atoi(temp);
 		temp = strtok(NULL,";");
-		w->kaucja = atoi(temp);
+		w->kaucja = atof(temp);
 		temp = strtok(NULL,";");
-		w->cena = atoi(temp);
+		w->cena = atof(temp);
 	}
 	return pos;
 }
@@ -233,7 +233,7 @@ int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 */
 //czysci plik txt (zapisuje go jako backup - w przyszlosci)
 void Backup(char n[20]){
-	FILE *p = fopen(n,"r");
+	FILE *p = fopen(n,"w");
 	fclose(p);
 }
 
@@ -325,7 +325,8 @@ int InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
 int AddOsoba(struct Osoba temp,struct Osoba **tOsoby,int lines){
 	*tOsoby = realloc(*tOsoby,(lines+1)*sizeof(struct Osoba));
 
-	(*tOsoby)[lines].nr_klienta = temp.nr_klienta;
+		(*tOsoby)[lines].nr_klienta = temp.nr_klienta;
+		//printf("AddOsoba nr_klienta %d",temp.nr_klienta);
 		(*tOsoby)[lines].karta = temp.karta;
 		memcpy((*tOsoby)[lines].imie,temp.imie,sizeof(temp.imie));
 		memcpy((*tOsoby)[lines].nazwisko,temp.nazwisko,sizeof(temp.nazwisko));
@@ -357,7 +358,7 @@ int AddWypozyczenie(struct Wypozyczenia	temp,struct Wypozyczenia **tWypozyczenia
 	(*tWypozyczenia)[lines].data_zwrotu = temp.data_zwrotu;
 	(*tWypozyczenia)[lines].kaucja = temp.kaucja;
 	(*tWypozyczenia)[lines].cena = temp.cena;
-		return lines+1;
+	return lines+1;
 }
 
 void RemoveOsoba(int index,struct Osoba **tOsoby){
@@ -395,7 +396,7 @@ void WyswietlAuto(struct Auto **a,int lines){
 }
 void WyswietlWypoczyenie(struct Wypozyczenia **w,int lines){
 	for(int i=0;i<lines;i++){
-		printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+		printf("%d\t%d\t%d\t%d\t%d\t%f\t%f\n",
 				(*w)[i].nr_wyp,
 				(*w)[i].nr_klienta,
 				(*w)[i].nr_samochodu,
@@ -410,8 +411,9 @@ struct Osoba MakeOsoba(){
 	struct Osoba os;
 	printf("Podaj numer klienta: ");
 	scanf("%d",&os.nr_klienta);
+	//printf("MakeOsoba nr_klienta %d",&os.nr_klienta);
 	printf("\nPodaj numer karty: ");
-	scanf("%d",&os.nr_klienta);
+	scanf("%d",&os.karta);
 	printf("\nPodaj imie: ");
 	scanf("%s",&os.imie);
 	printf("\nPodaj nazwisko: ");
@@ -443,17 +445,24 @@ struct Wypozyczenia MakeWypozyczenia(){
 	struct Wypozyczenia wyp;
 	printf("Podaj nr. wypozyczenia: ");
 	scanf("%d",&wyp.nr_wyp);
+	//printf("MakeWypozyczenia nr.wyp %d",wyp.nr_wyp);
 	printf("\nPodaj nr. klienta: ");
 	scanf("%d",&wyp.nr_klienta);
+	//printf("MakeWypozyczenia nr.klienta %d",wyp.nr_klienta);
 	printf("\nPodaj nr. samochodu: ");
 	scanf("%d",&wyp.nr_samochodu);
+	//printf("MakeWypozyczenia nr_samochodu %d",wyp.nr_samochodu);
 	printf("\nPodaj date wypozyczenia: ");
 	scanf("%d",&wyp.data_wyp);
+	//printf("MakeWypozyczenia data wyp %d",wyp.data_wyp);
 	printf("\nPodaj date zwrotu: ");
 	scanf("%d",&wyp.data_zwrotu);
+	//printf("MakeWypozyczenia data zwrotu %d",wyp.data_zwrotu);
 	printf("Podaj kacuje: ");
-	scanf("%d",&wyp.kaucja);
+	scanf("%f",&wyp.kaucja);
+	//printf("MakeWypozyczenia kaucja %f",wyp.kaucja);
 	printf("Podaj cene");
-	scanf("%d",&wyp.cena);
+	scanf("%f",&wyp.cena);
+	//printf("MakeWypozyczenia cena %f",wyp.cena);
 	return wyp;
 }
