@@ -60,6 +60,7 @@ komendy:
 				WyswietlAuto(&tAuta,linesA);
 			else if(strcasecmp(cmd,"wypozyczenia")==0)
 				WyswietlWypozyczenie(&tWypozyczenia,linesW);
+		}
 
 
 		else if(strcasecmp(cmd,"dodaj")==0){
@@ -78,8 +79,23 @@ komendy:
 				if(strcasecmp(temp,"wyswietl")==0)
 					WyswietlOsoba(&tOsoby,linesO);
 			}
+		else if(strcasecmp(cmd,"auto")==0){
+				char temp[50];
+				int index;
+				puts("Ktore auto usunac? Wpisz wyswietl aby zobaczyc liste wszystkich aut.");
+				if(strcasecmp(temp,"wyswietl")==0)
+					WyswietlAuto(&tAuta,linesA);
+			}
+		}
+		else if(strcasecmp(cmd,"szukaj")==0){
+			scanf("%s",&cmd);
+			if(strcasecmp(cmd,"osobe")==0)
+				SearchOsoba(tOsoby,linesO);
+			else if(strcasecmp(cmd,"auto")==0)
+				SearchAuto(tAuta,linesA);
+			else if(strcasecmp(cmd,"wypozyczenie")==0)
+				SearchWypozyczenie(tWypozyczenia,linesW);
 		}
 
-		}
 	}
-}
+	}

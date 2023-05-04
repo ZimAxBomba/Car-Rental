@@ -390,7 +390,7 @@ struct Osoba MakeOsoba(){
 	printf("\nPodaj numer karty: ");
 	scanf("%16s",&os.karta);
 	printf("\nPodaj imie: ");
-	scanf("%s%s",&os.imie);
+	scanf("%s",&os.imie);
 	printf("\nPodaj nazwisko: ");
 	scanf("%s",&os.nazwisko);
 	printf("\nPodaj adres: ");
@@ -442,6 +442,81 @@ struct Wypozyczenia MakeWypozyczenia(){
 	return wyp;
 }
 
-void Search(){
+
+void RekordHelper(char typ[20]){
+	if(strcasecmp(typ,"osoba")==0){
+		puts("Pola w rekordzie osoba:\n");
+		puts("nrKlienta\n");
+		puts("karta\n");
+		puts("imie\n");
+		puts("naziwsko\n");
+		puts("adres\n");
+		puts("telefon\n");
+	}
+	else if(strcasecmp(typ,"auto")==0){
+		puts("Pola w rekordzie auta:\n");
+		puts("nrSamochodu\n");
+		puts("rejestracja\n");
+		puts("marka\n");
+		puts("model\n");
+		puts("rok\n");
+		puts("kolor\n");
+		puts("przebieg\n");
+	}
+	else if(strcasecmp(typ,"wypozyczenia")==0){
+		puts("Pola w rekordzie wypozyczenia:\n");
+		puts("nrWypozyczenia\n");
+		puts("nrKlienta\n");
+		puts("nrsamochodu\n");
+		puts("dataWypozyczenia\n");
+		puts("dataZwrotu\n");
+		puts("kaucja\n");
+		puts("cena\n");
+	}
+}
+
+int SearchOsoba(struct Osoba *o,int lines){
+	char cmd[100];
+	//tablica pasujacych rekordow
+	struct Osoba *temp;
+	int tempLines=0;
+	int searchVal=0;
+	int loop=1;
+	puts("Ktore pole przeszukac? Wpisz pola aby wyswietlic dostepne pola");
+	while(loop){
+	scanf("%s",&cmd);
+	//okropne
+	if(strcasecmp(cmd,"nrKlienta")==0){
+		loop=0;
+		puts("Nr. klienta do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal = atoi(cmd);
+
+		for(int i=0;i<lines;i++){
+			if(o[i].nr_klienta == searchVal)
+				tempLines = AddOsoba(o[i],&temp,tempLines);
+		}
+		WyswietlOsoba(&temp,tempLines);
+
+	}
+	//analogicznie reszte pol Dxxxx
+
+	else if(strcasecmp(cmd,"pola")==0)
+		RekordHelper("osoba");
+}
+
+}
+/*
+for(int i=0;i<lines;i++){
+			if(o[i].nr_klienta = searchVal)
+				tempLines = AddOsoba(*o,&temp,tempLines);
+		}
+*/
+
+void SearchAuto(struct Auto *a,int lines){
+
+}
+
+void SearchWypozyczenie(struct Wypozyczenia *w,int lines){
 
 }
