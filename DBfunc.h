@@ -334,28 +334,19 @@ void RemoveWypozyczenie(int index,struct Wypozyczenia **tWypozyczenia){
 	//usuwanie powiazan
 	(*tWypozyczenia)->cena = 0.0;
 }
-void WyswietlOsoba(struct Osoba **o,int lines){
-	printf("Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
-	if(!lines)
-		puts("Nie ma zadnych osob");
-	for(int i=0;i<lines;i++){
-		printf("%d\t%s\t%s\t%s\t%s\t%s\t%d\n",
+void WyswietlOsoba(struct Osoba **o,int i){
+		printf("%d | %s | %s | %s | %s | %s | %d\n",
 				(*o)[i].nr_klienta,
 				(*o)[i].karta,
 				(*o)[i].imie,
 				(*o)[i].nazwisko,
 				(*o)[i].adres,
 				(*o)[i].telefon,
-				(*o)[i].wyp);
-	}
+				(*o)[i].wyp);	
 }
 
-void WyswietlAuto(struct Auto **a,int lines){
-	printf("Nr. samochodu|Rejestracja|Marka|Model|Rok|Kolor|Przebieg|Wypozyczony \n");
-	if(!lines)
-		puts("Nie ma zadnych aut");
-	for(int i=0;i<lines;i++){
-		printf("%d\t%s\t%s\t%s\t%s\t%s\t%d\t%d\n",
+void WyswietlAuto(struct Auto **a,int i){
+		printf("%d | %s | %s | %s | %s | %s | %d | %d\n",
 				(*a)[i].nr_samochodu,
 				(*a)[i].rejestracja,
 				(*a)[i].marka,
@@ -363,23 +354,17 @@ void WyswietlAuto(struct Auto **a,int lines){
 				(*a)[i].rok,
 				(*a)[i].kolor,
 				(*a)[i].przebieg,
-				(*a)[i].wyp);
-	}
+				(*a)[i].wyp);	
 }
-void WyswietlWypozyczenie(struct Wypozyczenia **w,int lines){
-	printf("Nr. wypozyczenia|Nr. klienta|Nr. samochodu|Data wypozyczenia|Data zwrotu|Kaucja|Cena \n");
-	if(!lines)
-		puts("Nie ma zadnych wypozyczen");
-	for(int i=0;i<lines;i++){
-		printf("%d\t%d\t%d\t%s\t%s\t%f\t%f\n",
+void WyswietlWypozyczenie(struct Wypozyczenia **w,int i){
+		printf("%d | %d | %d | %s | %s | %f | %f\n",
 				(*w)[i].nr_wyp,
 				(*w)[i].nr_klienta,
 				(*w)[i].nr_samochodu,
 				(*w)[i].data_wyp,
 				(*w)[i].data_zwrotu,
 				(*w)[i].kaucja,
-				(*w)[i].cena);
-	}
+				(*w)[i].cena);	
 }
 
 struct Osoba MakeOsoba(){
@@ -479,6 +464,8 @@ int SearchOsoba(struct Osoba *o,int lines){
 	char cmd[100];
 	//tablica pasujacych rekordow
 	struct Osoba *temp;
+	int *tempId;
+	tempId=malloc(sizeof(int));
 	int tempLines=0;
 	int searchVal=0;
 	int loop=1;
@@ -493,10 +480,17 @@ int SearchOsoba(struct Osoba *o,int lines){
 		searchVal = atoi(cmd);
 
 		for(int i=0;i<lines;i++){
-			if(o[i].nr_klienta == searchVal)
+			if(o[i].nr_klienta == searchVal){
+				tempId[tempLines]=i;
 				tempLines = AddOsoba(o[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
 		}
-		WyswietlOsoba(&temp,tempLines);
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlOsoba(&temp,i);
+		}
 
 	}
 	//analogicznie reszte pol Dxxxx

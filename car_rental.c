@@ -45,6 +45,9 @@ komendy:
 		osobe
 		auto
 	szukaj
+		osoby
+		auta
+		wypozyczenia
 	wypozycz
 	zwroc
 
@@ -53,21 +56,43 @@ komendy:
 		scanf("%s",&cmd);
 		//else if ladder eeeeww
 		if(strcasecmp(cmd,"wyswietl")==0){
-			scanf("%s",&cmd);
-			if(strcasecmp(cmd,"osoby")==0)
-				WyswietlOsoba(&tOsoby,linesO);
-			else if(strcasecmp(cmd,"auta")==0)
-				WyswietlAuto(&tAuta,linesA);
-			else if(strcasecmp(cmd,"wypozyczenia")==0)
-				WyswietlWypozyczenie(&tWypozyczenia,linesW);
+			scanf("%s)",&cmd);
+			if(strcasecmp(cmd,"osoby")==0){
+				printf("Index|Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
+			if(!linesO)
+				puts("Brak osob");
+			int i;
+			for(i=0;i<linesO;i++){
+				printf("%d.|",i);
+				WyswietlOsoba(&tOsoby,i);
+				}
+			}
+			else if(strcasecmp(cmd,"auta")==0){
+				printf("Nr. samochodu|Rejestracja|Marka|Model|Rok|Kolor|Przebieg|Wypozyczony \n");
+				if(!linesA)
+					puts("Brak aut");
+			int i;
+			for(i=0;i<linesA;i++){
+				printf("%d.|",i);
+				WyswietlAuto(&tAuta,i);
+				}
+			}
+			else if(strcasecmp(cmd,"wypozyczenia")==0){
+				printf("Nr. wypozyczenia|Nr. klienta|Nr. samochodu|Data wypozyczenia|Data zwrotu|Kaucja|Cena \n");
+				if(!linesW)
+					puts("Brak wypozyczen");
+			int i;
+			for(i=0;i<linesW;i++){
+				printf("%d.|",i);
+				WyswietlWypozyczenie(&tWypozyczenia,i);
+			}
+			}
 		}
 
 
 		else if(strcasecmp(cmd,"dodaj")==0){
 			scanf("%s",&cmd);
-			if(strcasecmp(cmd,"osobe")==0)
-				linesO = AddOsoba(MakeOsoba(),&tOsoby,linesO);
-			else if(strcasecmp(cmd,"auto")==0)
+			if(strcasecmp(cmd,"osobe")==0) linesO = AddOsoba(MakeOsoba(),&tOsoby,linesO); else if(strcasecmp(cmd,"auto")==0)
 				linesA = AddAuto(MakeAuto(),&tAuta,linesA);
 		}
 		else if(strcasecmp(cmd,"usun")==0){
@@ -95,6 +120,40 @@ komendy:
 				SearchAuto(tAuta,linesA);
 			else if(strcasecmp(cmd,"wypozyczenie")==0)
 				SearchWypozyczenie(tWypozyczenia,linesW);
+		}
+		else if(strcasecmp(cmd,"wypozycz")==0){
+		
+		}
+		else if(strcasecmp(cmd,"zwroc")==0){
+		
+		}
+		else if(strcasecmp(cmd,"zamknij")==0){
+			puts("Zapisywanie plikow");
+			Backup("Osoby.txt");
+			for(int i=0;i<linesO;i++){
+				if(strcmp(tOsoby[i].imie,"DELETE")==0)
+					continue;
+					SaveOsoba(tOsoby[i]);
+				}
+			puts("Zapisano osoby");
+
+			Backup("Auta.txt");
+			for(int i=0;i<linesA;i++){
+				if(strcmp(tAuta[i].model,"DELETE")==0)
+					continue;
+					SaveAuto(tAuta[i]);
+				}
+
+			puts("Zapisano auta");
+
+			Backup("Wypozyczenia.txt");
+			for(int i=0;i<linesW;i++){
+				if(tWypozyczenia[i].cena==0.0)
+					continue;
+					SaveWypozyczenie(tWypozyczenia[i]);
+				}
+			puts("Zapisano wypozyczenia");
+			loop = 0;
 		}
 
 	}
