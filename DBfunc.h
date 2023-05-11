@@ -335,6 +335,8 @@ void RemoveWypozyczenie(int index,struct Wypozyczenia **tWypozyczenia){
 	(*tWypozyczenia)->cena = 0.0;
 }
 void WyswietlOsoba(struct Osoba **o,int i){
+		if(!strcmp((*o)[i].imie,"DELETE"))
+				return;
 		printf("%d | %s | %s | %s | %s | %s | %d\n",
 				(*o)[i].nr_klienta,
 				(*o)[i].karta,
@@ -346,6 +348,8 @@ void WyswietlOsoba(struct Osoba **o,int i){
 }
 
 void WyswietlAuto(struct Auto **a,int i){
+		if(!strcmp((*a)[i].model,"DELETE"))
+				return;
 		printf("%d | %s | %s | %s | %s | %s | %d | %d\n",
 				(*a)[i].nr_samochodu,
 				(*a)[i].rejestracja,
@@ -357,6 +361,8 @@ void WyswietlAuto(struct Auto **a,int i){
 				(*a)[i].wyp);	
 }
 void WyswietlWypozyczenie(struct Wypozyczenia **w,int i){
+		if((*w)[i].cena==0.0)
+			return;
 		printf("%d | %d | %d | %s | %s | %f | %f\n",
 				(*w)[i].nr_wyp,
 				(*w)[i].nr_klienta,
