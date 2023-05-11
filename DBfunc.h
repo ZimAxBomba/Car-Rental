@@ -463,9 +463,8 @@ void RekordHelper(char typ[20]){
 int SearchOsoba(struct Osoba *o,int lines){
 	char cmd[100];
 	//tablica pasujacych rekordow
-	struct Osoba *temp;
-	int *tempId;
-	tempId=malloc(sizeof(int));
+	struct Osoba *temp=malloc(sizeof(struct Osoba));
+	int *tempId=malloc(sizeof(int));
 	int tempLines=0;
 	int searchVal=0;
 	int loop=1;
@@ -477,8 +476,7 @@ int SearchOsoba(struct Osoba *o,int lines){
 		loop=0;
 		puts("Nr. klienta do wyszukania: ");
 		scanf("%s",&cmd);
-		searchVal = atoi(cmd);
-
+		searchVal=atoi(cmd);
 		for(int i=0;i<lines;i++){
 			if(o[i].nr_klienta == searchVal){
 				tempId[tempLines]=i;
@@ -493,6 +491,108 @@ int SearchOsoba(struct Osoba *o,int lines){
 		}
 
 	}
+
+	else if(strcasecmp(cmd,"karta")==0){
+		loop=0;
+		puts("Nr. karty do wyszukania: ");
+		scanf("%s",&cmd);
+
+		for(int i=0;i<lines;i++){
+			if(strstr(o[i].karta,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddOsoba(o[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlOsoba(&temp,i);
+		}
+
+	}
+
+	else if(strcasecmp(cmd,"imie")==0){
+		loop=0;
+		puts("Imie do wyszukania: ");
+		scanf("%s",&cmd);
+
+		for(int i=0;i<lines;i++){
+			if(strstr(o[i].imie,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddOsoba(o[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlOsoba(&temp,i);
+		}
+
+	}
+
+	else if(strcasecmp(cmd,"nazwisko")==0){
+		loop=0;
+		puts("Nazwisko do wyszukania: ");
+		scanf("%s",&cmd);
+
+		for(int i=0;i<lines;i++){
+			if(strstr(o[i].nazwisko,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddOsoba(o[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlOsoba(&temp,i);
+		}
+
+	}
+
+	else if(strcasecmp(cmd,"adres")==0){
+		loop=0;
+		puts("Adres do wyszukania: ");
+		scanf("\n%[^\n]",&cmd);
+
+		for(int i=0;i<lines;i++){
+			//if(!strcmp(o[i].adres,cmd)){
+			if(strstr(o[i].adres,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddOsoba(o[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlOsoba(&temp,i);
+		}
+
+	}
+
+	else if(strcasecmp(cmd,"telefon")==0){
+		loop=0;
+		puts("Telefon do wyszukania: ");
+		scanf("%s",&cmd);
+
+		for(int i=0;i<lines;i++){
+			if(strstr(o[i].telefon,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddOsoba(o[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlOsoba(&temp,i);
+		}
+
+	}
+
 	//analogicznie reszte pol Dxxxx
 
 	else if(strcasecmp(cmd,"pola")==0)
