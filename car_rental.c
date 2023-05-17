@@ -92,7 +92,9 @@ komendy:
 
 		else if(strcasecmp(cmd,"dodaj")==0){
 			scanf("%s",&cmd);
-			if(strcasecmp(cmd,"osobe")==0) linesO = AddOsoba(MakeOsoba(),&tOsoby,linesO); else if(strcasecmp(cmd,"auto")==0)
+			if(strcasecmp(cmd,"osobe")==0)
+			       	linesO = AddOsoba(MakeOsoba(),&tOsoby,linesO);
+			else if(strcasecmp(cmd,"auto")==0)
 				linesA = AddAuto(MakeAuto(),&tAuta,linesA);
 		}
 		else if(strcasecmp(cmd,"usun")==0){

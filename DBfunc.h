@@ -466,6 +466,22 @@ void RekordHelper(char typ[20]){
 	}
 }
 
+int CompareTime(char time1[11],char time2[11]){
+	int r1,m1,d1,r2,m2,d2;
+	char *temp1 = strtok(time1,"/");
+	char *temp2 = strtok(time2,"/");
+	r1=atoi(temp1);
+	r2=atoi(temp2);
+	temp1 = strtok(time1,"/");
+	temp2 = strtok(time2,"/");
+	m1=atoi(temp1);
+	m2=atoi(temp2);
+	temp1 = strtok(time1,"/");
+	temp2 = strtok(time2,"/");
+	d1=atoi(temp1);
+	d2=atoi(temp2);
+}
+
 int SearchOsoba(struct Osoba *o,int lines){
 	char cmd[100];
 	//tablica pasujacych rekordow
@@ -614,9 +630,265 @@ for(int i=0;i<lines;i++){
 */
 
 void SearchAuto(struct Auto *a,int lines){
-
+	char cmd[100];
+	//tablica pasujacych rekordow
+	struct Auto *temp=malloc(sizeof(struct Auto));
+	int *tempId=malloc(sizeof(int));
+	int tempLines=0;
+	int searchVal=0;
+	int loop=1;
+	puts("Ktore pole przeszukac? Wpisz pola aby wyswietlic dostepne pola");
+	while(loop){
+	scanf("%s",&cmd);
+	//okropne
+	if(strcasecmp(cmd,"NrSamochodu")==0){
+		loop=0;
+		puts("Nr. Samochodu do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal=atoi(cmd);
+		for(int i=0;i<lines;i++){
+			if(a[i].nr_samochodu == searchVal){
+				tempId[tempLines]=i;
+				tempLines = AddAuto(a[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlAuto(&temp,i);
+			}	
+		}
 }
 
-void SearchWypozyczenie(struct Wypozyczenia *w,int lines){
+	else if(strcasecmp(cmd,"rejestracja")==0){
+		loop=0;
+		puts("Nr. Rejestracji do wyszukania: ");
+		scanf("%s",&cmd);
 
+		for(int i=0;i<lines;i++){
+			if(strstr(a[i].rejestracja,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddAuto(a[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlAuto(&temp,i);
+		}
+
+	}
+
+	else if(strcasecmp(cmd,"marka")==0){
+		loop=0;
+		puts("Marka do wyszukania: ");
+		scanf("%s",&cmd);
+
+		for(int i=0;i<lines;i++){
+			if(strstr(a[i].marka,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddAuto(a[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlAuto(&temp,i);
+		}
+
+	}
+	else if(strcasecmp(cmd,"model")==0){
+		loop=0;
+		puts("Model do wyszukania: ");
+		scanf("%s",&cmd);
+
+		for(int i=0;i<lines;i++){
+			if(strstr(a[i].marka,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddAuto(a[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlAuto(&temp,i);
+		}
+
+	}
+	else if(strcasecmp(cmd,"rok")==0){
+		loop=0;
+		puts("Rok do wyszukania: ");
+		scanf("%s",&cmd);
+
+		for(int i=0;i<lines;i++){
+			if(strstr(a[i].rok,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddAuto(a[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlAuto(&temp,i);
+		}
+
+	}	
+	else if(strcasecmp(cmd,"kolor")==0){
+		loop=0;
+		puts("Kolor do wyszukania: ");
+		scanf("%s",&cmd);
+
+		for(int i=0;i<lines;i++){
+			if(strstr(a[i].kolor,cmd)!=NULL){
+				tempId[tempLines]=i;
+				tempLines = AddAuto(a[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlAuto(&temp,i);
+		}
+
+	}
+	else if(strcasecmp(cmd,"Przebieg")==0){
+		loop=0;
+		puts("Maksymalny przebieg do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal=atoi(cmd);
+		for(int i=0;i<lines;i++){
+			if(a[i].przebieg <= searchVal){
+				tempId[tempLines]=i;
+				tempLines = AddAuto(a[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		int i;
+		for(i=0;i<tempLines;i++){
+			printf("%d.|",tempId[i]);
+			WyswietlAuto(&temp,i);
+			}	
+		}
+}
+	else if(strcasecmp(cmd,"pola")==0)
+		RekordHelper("auto");
+		}
+}
+			
+void SearchWypozyczenie(struct Wypozyczenia *w,int lines){
+	char cmd[100];
+	//tablica pasujacych rekordow
+	struct Wypozyczenia *temp=malloc(sizeof(struct Wypozyczenia));
+	int *tempId=malloc(sizeof(int));
+	int tempLines=0;
+	int searchVal=0;
+	int loop=1;
+	puts("Ktore pole przeszukac? Wpisz pola aby wyswietlic dostepne pola");
+	while(loop){
+	scanf("%s",&cmd);
+	//okropne
+	if(strcasecmp(cmd,"NrWypozyczenia")==0){
+		loop=0;
+		puts("Nr. Wypozyczenia do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal=atoi(cmd);
+		for(int i=0;i<lines;i++){
+			if(w[i].nr_wyp == searchVal){
+				tempId[tempLines]=i;
+				tempLines = AddWypozyczenie(w[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+	}
+	else if(strcasecmp(cmd,"NrKlienta")==0){
+		loop=0;
+		puts("Nr. Klienta do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal=atoi(cmd);
+		for(int i=0;i<lines;i++){
+			if(w[i].nr_klienta == searchVal){
+				tempId[tempLines]=i;
+				tempLines = AddWypozyczenie(w[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+	}
+
+	else if(strcasecmp(cmd,"NrSamochodu")==0){
+		loop=0;
+		puts("Nr. Samochodu do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal=atoi(cmd);
+		for(int i=0;i<lines;i++){
+			if(w[i].nr_klienta == searchVal){
+				tempId[tempLines]=i;
+				tempLines = AddWypozyczenie(w[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+	}
+
+	else if(strcasecmp(cmd,"DataWypozyczenia")==0){
+		loop=0;
+		puts("Data wypozyczenia do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal=atoi(cmd);
+		for(int i=0;i<lines;i++){
+			if(!strcmp(w[i].data_wyp,cmd)){
+				tempId[tempLines]=i;
+				tempLines = AddWypozyczenie(w[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+	}
+
+	else if(strcasecmp(cmd,"DataZwrotu")==0){
+		loop=0;
+		puts("Data zwrotu do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal=atoi(cmd);
+		for(int i=0;i<lines;i++){
+			if(!strcmp(w[i].data_zwrotu,cmd)){
+				tempId[tempLines]=i;
+				tempLines = AddWypozyczenie(w[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+	}
+
+	else if(strcasecmp(cmd,"kaucja")==0){
+		loop=0;
+		puts("Kaucja do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal=atoi(cmd);
+		for(int i=0;i<lines;i++){
+			if(w[i].kaucja == searchVal){
+				tempId[tempLines]=i;
+				tempLines = AddWypozyczenie(w[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+	}
+
+	else if(strcasecmp(cmd,"cena")==0){
+		loop=0;
+		puts("Cena do wyszukania: ");
+		scanf("%s",&cmd);
+		searchVal=atoi(cmd);
+		for(int i=0;i<lines;i++){
+			if(w[i].cena <= searchVal){
+				tempId[tempLines]=i;
+				tempLines = AddWypozyczenie(w[i],&temp,tempLines);
+				tempId=realloc(tempId,(tempLines+1)*sizeof(int));
+			}
+		}
+	}
+
+	else if(strcasecmp(cmd,"pola")==0)
+		RekordHelper("wypozyczenia");
+		}
 }
