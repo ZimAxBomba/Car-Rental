@@ -373,6 +373,41 @@ void WyswietlWypozyczenie(struct Wypozyczenia **w,int i){
 				(*w)[i].cena);	
 }
 
+void EditOsoba(struct Osoba **o,int lines){
+	int index;
+	char cmd[50];
+	int lop=1;
+	puts("Edytowac ktory rekord? Wpisz wyswietl aby pokazac wszystkie rekordy\n");
+	puts("Wpisz szukaj aby wyszukac rekord\n");
+	scanf("%s",&cmd);
+	while(lop){
+		if(atoi(cmd)){
+			index=atoi(cmd);
+			while(lop){
+				puts("Ktore pole edytowac?");
+				scanf("%s",&cmd);
+				if(strcasecmp(cmd,"imie")==0){
+					puts("Podaj nowe imie:\n");
+					scanf("%s",cmd);
+					//memcpy((*tOsoby)[index].imie,cmd,sizeof(struct Osoby o.imie));
+				}
+			}
+		}
+		else if(strcasecmp(cmd,"wyswietl"){
+			printf("Index|Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
+			if(!linesO)
+				puts("Brak osob");
+			int i;
+			for(i=0;i<linesO;i++){
+				printf("%d.|",i);
+				WyswietlOsoba(&tOsoby,i);
+				}				
+		}
+		else if(strcasecmp(cmd,"szukaj")==0)
+			SearchOsoba(tOsoby,lines);
+	}
+}
+
 struct Osoba MakeOsoba(){
 	struct Osoba os;
 	printf("Podaj numer klienta: ");
@@ -464,22 +499,6 @@ void RekordHelper(char typ[20]){
 		puts("kaucja\n");
 		puts("cena\n");
 	}
-}
-
-int CompareTime(char time1[11],char time2[11]){
-	int r1,m1,d1,r2,m2,d2;
-	char *temp1 = strtok(time1,"/");
-	char *temp2 = strtok(time2,"/");
-	r1=atoi(temp1);
-	r2=atoi(temp2);
-	temp1 = strtok(time1,"/");
-	temp2 = strtok(time2,"/");
-	m1=atoi(temp1);
-	m2=atoi(temp2);
-	temp1 = strtok(time1,"/");
-	temp2 = strtok(time2,"/");
-	d1=atoi(temp1);
-	d2=atoi(temp2);
 }
 
 int SearchOsoba(struct Osoba *o,int lines){

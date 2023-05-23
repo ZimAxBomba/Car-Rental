@@ -52,10 +52,13 @@ komendy:
 	zwroc
 
 		  */
-		puts("\nPodaj komende:\n");
+		puts("\n\nPodaj komende:\n");
 		scanf("%s",&cmd);
 		//else if ladder eeeeww
-		if(strcasecmp(cmd,"wyswietl")==0){
+		if(strcasecmp(cmd,"pomoc")==0){
+			printf("Dostepne komendy:\n\tWyswietl\n\t\t osoby\n\t\t auta\n\t\t wypozyczenia\n\t Dodaj\n\t\t osobe\n\t\t auto\n\t Edytuj\n\t\t osobe\n\t\t auto\n\t Usun\n\t\t osobe\n\t\t auto\n\t Szukaj\n\t\t osobe\n\t\t auto\n\t\t wypozyczenia\n\t Wypozycz\n\t Zwroc");
+		}
+		else if(strcasecmp(cmd,"wyswietl")==0){
 			scanf("%s)",&cmd);
 			if(strcasecmp(cmd,"osoby")==0){
 				printf("Index|Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
@@ -100,18 +103,60 @@ komendy:
 		else if(strcasecmp(cmd,"usun")==0){
 			scanf("%s",&cmd);
 			if(strcasecmp(cmd,"osobe")==0){
+				int lop=1;
 				char temp[50];
 				int index;
 				puts("Ktora osobe usunac? Wpisz wyswietl aby zobaczyc liste wszystkich osob.");
-				if(strcasecmp(temp,"wyswietl")==0)
-					WyswietlOsoba(&tOsoby,linesO);
+				puts("Wpisz szukaj aby wyszukac osobe do usuniecia");
+				while(lop){
+					scanf("%s",&temp);
+					if(atoi(temp)){
+						index=atoi(temp);
+						RemoveOsoba(index,&tOsoby);
+						lop=0;
+						
+					}
+					else if(strcasecmp(temp,"wyswietl")==0){
+						printf("Index|Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
+					if(!linesO)
+						puts("Brak osob");
+						int i;
+						for(i=0;i<linesO;i++){
+							printf("%d.|",i);
+							WyswietlOsoba(&tOsoby,i);
+						}
+					}		
+					else if(strcasecmp(temp,"szukaj")==0)
+						SearchOsoba(tOsoby,linesO);
+				}
 			}
 		else if(strcasecmp(cmd,"auto")==0){
-				char temp[50];
-				int index;
-				puts("Ktore auto usunac? Wpisz wyswietl aby zobaczyc liste wszystkich aut.");
-				if(strcasecmp(temp,"wyswietl")==0)
-					WyswietlAuto(&tAuta,linesA);
+			int lop=1;
+			char temp[50];
+			int index;
+			puts("Ktora auto usunac? Wpisz wyswietl aby zobaczyc liste wszystkich aut.");
+			puts("Wpisz szukaj aby wyszukac auto do usuniecia");
+			while(lop){
+				scanf("%s",&temp);
+				if(atoi(temp)){
+					index=atoi(temp);
+					RemoveAuto(index,&tAuta);
+					lop=0;
+					
+				}
+				else if(strcasecmp(temp,"wyswietl")==0){
+					printf("Nr. samochodu|Rejestracja|Marka|Model|Rok|Kolor|Przebieg|Wypozyczony \n");
+				if(!linesA)
+					puts("Brak aut");
+					int i;
+					for(i=0;i<linesA;i++){
+						printf("%d.|",i);
+						WyswietlAuto(&tAuta,i);
+					}
+				}		
+				else if(strcasecmp(temp,"szukaj")==0)
+					SearchAuto(tAuta,linesA);
+			}	
 			}
 		}
 		else if(strcasecmp(cmd,"szukaj")==0){
@@ -157,6 +202,35 @@ komendy:
 			puts("Zapisano wypozyczenia");
 			loop = 0;
 		}
+
+		else if(strcasecmp(cmd,"zapisz")==0){
+			puts("Zapisywanie plikow");
+			Backup("Osoby.txt");
+			for(int i=0;i<linesO;i++){
+				if(strcmp(tOsoby[i].imie,"DELETE")==0)
+					continue;
+					SaveOsoba(tOsoby[i]);
+				}
+			puts("Zapisano osoby");
+
+			Backup("Auta.txt");
+			for(int i=0;i<linesA;i++){
+				if(strcmp(tAuta[i].model,"DELETE")==0)
+					continue;
+					SaveAuto(tAuta[i]);
+				}
+
+			puts("Zapisano auta");
+
+			Backup("Wypozyczenia.txt");
+			for(int i=0;i<linesW;i++){
+				if(tWypozyczenia[i].cena==0.0)
+					continue;
+					SaveWypozyczenie(tWypozyczenia[i]);
+				}
+			puts("Zapisano wypozyczenia");
+		}
+
 
 	}
 	}
