@@ -373,40 +373,7 @@ void WyswietlWypozyczenie(struct Wypozyczenia **w,int i){
 				(*w)[i].cena);	
 }
 
-void EditOsoba(struct Osoba **o,int lines){
-	int index;
-	char cmd[50];
-	int lop=1;
-	puts("Edytowac ktory rekord? Wpisz wyswietl aby pokazac wszystkie rekordy\n");
-	puts("Wpisz szukaj aby wyszukac rekord\n");
-	scanf("%s",&cmd);
-	while(lop){
-		if(atoi(cmd)){
-			index=atoi(cmd);
-			while(lop){
-				puts("Ktore pole edytowac?");
-				scanf("%s",&cmd);
-				if(strcasecmp(cmd,"imie")==0){
-					puts("Podaj nowe imie:\n");
-					scanf("%s",cmd);
-					//memcpy((*tOsoby)[index].imie,cmd,sizeof(struct Osoby o.imie));
-				}
-			}
-		}
-		else if(strcasecmp(cmd,"wyswietl"){
-			printf("Index|Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
-			if(!linesO)
-				puts("Brak osob");
-			int i;
-			for(i=0;i<linesO;i++){
-				printf("%d.|",i);
-				WyswietlOsoba(&tOsoby,i);
-				}				
-		}
-		else if(strcasecmp(cmd,"szukaj")==0)
-			SearchOsoba(tOsoby,lines);
-	}
-}
+
 
 struct Osoba MakeOsoba(){
 	struct Osoba os;
@@ -442,31 +409,7 @@ struct Auto MakeAuto(){
 	scanf("%s",&au.kolor);
 	return au;
 }
-struct Wypozyczenia MakeWypozyczenia(){
-	struct Wypozyczenia wyp;
-	printf("Podaj nr. wypozyczenia: ");
-	scanf("%d",&wyp.nr_wyp);
-	//printf("MakeWypozyczenia nr.wyp %d",wyp.nr_wyp);
-	printf("\nPodaj nr. klienta: ");
-	scanf("%d",&wyp.nr_klienta);
-	//printf("MakeWypozyczenia nr.klienta %d",wyp.nr_klienta);
-	printf("\nPodaj nr. samochodu: ");
-	scanf("%d",&wyp.nr_samochodu);
-	//printf("MakeWypozyczenia nr_samochodu %d",wyp.nr_samochodu);
-	printf("\nPodaj date wypozyczenia dd-mm-yyyy: ");
-	scanf("%10s",&wyp.data_wyp);
-	//printf("MakeWypozyczenia data wyp %d",wyp.data_wyp);
-	printf("\nPodaj date zwrotu dd-mm-yyyy: ");
-	scanf("%10s",&wyp.data_zwrotu);
-	//printf("MakeWypozyczenia data zwrotu %d",wyp.data_zwrotu);
-	printf("Podaj kacuje: ");
-	scanf("%f",&wyp.kaucja);
-	//printf("MakeWypozyczenia kaucja %f",wyp.kaucja);
-	printf("Podaj cene");
-	scanf("%f",&wyp.cena);
-	//printf("MakeWypozyczenia cena %f",wyp.cena);
-	return wyp;
-}
+
 
 
 void RekordHelper(char typ[20]){
@@ -910,4 +853,155 @@ void SearchWypozyczenie(struct Wypozyczenia *w,int lines){
 	else if(strcasecmp(cmd,"pola")==0)
 		RekordHelper("wypozyczenia");
 		}
+}
+
+void EditOsoba(struct Osoba **o,int lines){
+	int index;
+	char cmd[50];
+	int lop=1;
+	puts("Edytowac ktory rekord? Wpisz wyswietl aby pokazac wszystkie rekordy\n");
+	puts("Wpisz szukaj aby wyszukac rekord\n");
+	while(lop){
+		scanf("%s",&cmd);
+		if(strlen(cmd)==1 || atoi(cmd)){
+			index=atoi(cmd);
+			while(lop){
+				puts("Ktore pole edytowac? Wpisz wyswietl aby wyswietlic dostepne pola");
+				scanf("%s",&cmd);
+				if(strcasecmp(cmd,"imie")==0){
+					puts("Podaj nowe imie:\n");
+					scanf("%s",cmd);
+					memcpy((*o)[index].imie,cmd,sizeof((*o)[index].imie));
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"nazwisko")==0){
+					puts("Podaj nowe nazwisko:\n");
+					scanf("%s",cmd);
+					memcpy((*o)[index].nazwisko,cmd,sizeof((*o)[index].nazwisko));
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"adres")==0){
+					puts("Podaj nowy adres:\n");
+					scanf("\n%[^\n]",&cmd);
+					memcpy((*o)[index].adres,cmd,sizeof((*o)[index].adres));
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"telefon")==0){
+					puts("Podaj nowy nr. telefonu:\n");
+					scanf("%s",&cmd);
+					memcpy((*o)[index].telefon,cmd,sizeof((*o)[index].telefon));
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"nrklienta")==0){
+					puts("Podaj nowy nr. klienta:\n");
+					scanf("%s",&cmd);
+					(*o)[index].nr_klienta = atoi(cmd);
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"karta")==0){
+					puts("Podaj nowy nr. karty:\n");
+					scanf("%s",&cmd);
+					memcpy((*o)[index].karta,cmd,sizeof((*o)[index].karta));
+					lop=0;
+				}
+				
+				else if(strcasecmp(cmd,"wyswietl")==0)
+						RekordHelper("osoba");
+			}
+		}
+		else if(strcasecmp(cmd,"wyswietl")==0){
+			printf("Index|Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
+			if(!lines)
+				puts("Brak osob");
+			int i;
+			for(i=0;i<lines;i++){
+				printf("%d.|",i);
+				WyswietlOsoba(o,i);
+				}				
+		}
+		else if(strcasecmp(cmd,"szukaj")==0)
+			SearchOsoba(*o,lines);
+	}
+}
+
+struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
+
+	char cmd[50];
+	int index;
+	struct Wypozyczenia wyp;
+	wyp.nr_wyp = CountLines("Wypozyczenia.txt")+1;	
+
+	printf("\nPodaj Index klienta: ");
+	puts("Wpisz wyswietl aby wyswietlic wszystkie osoby");
+	puts("Wpisz szukaj aby wyszukac osobe");
+	
+	int loop=1;
+	do{
+		scanf("%s",&cmd);
+		if(strlen(cmd)==1 || atoi(cmd)){
+			loop=0;
+			index = atoi(cmd);
+			wyp.nr_klienta = (*o)[index].nr_klienta;
+			(*o)[index].wyp=1;
+		}
+		else if(strcasecmp(cmd,"wyswietl")==0){
+			printf("Index|Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
+				if(!linesO)
+					puts("Brak osob");
+				int i;
+				for(i=0;i<linesO;i++){
+					printf("%d.|",i);
+					WyswietlOsoba(o,i);
+					}			
+					loop=0;
+			}
+		else if(strcasecmp(cmd,"szukaj")==0){
+			SearchOsoba(*o,linesO);
+			}
+		}while(loop);
+
+	loop=1;
+
+	printf("\nPodaj Index samochodu: ");
+	do{
+		scanf("%s",&cmd);
+		if(strlen(cmd)==1 || atoi(cmd)){
+			loop=0;
+			index = atoi(cmd);
+			wyp.nr_samochodu = (*a)[index].nr_samochodu;
+			(*a)[index].wyp=1;
+		}
+		else if(strcasecmp(cmd,"wyswietl")==0){
+			printf("Nr. samochodu|Rejestracja|Marka|Model|Rok|Kolor|Przebieg|Wypozyczony \n");
+				if(!linesA)
+					puts("Brak aut");
+				int i;
+				for(i=0;i<linesA;i++){
+					printf("%d.|",i);
+					WyswietlAuto(a,i);
+					}			
+					loop=0;
+			}
+		else if(strcasecmp(cmd,"szukaj")==0){
+			SearchAuto(*a,linesA);
+			}
+		}while(loop);
+
+	printf("\nPodaj date wypozyczenia dd-mm-yyyy: ");
+	scanf("%10s",&wyp.data_wyp);
+	//printf("MakeWypozyczenia data wyp %d",wyp.data_wyp);
+	printf("\nPodaj date zwrotu dd-mm-yyyy: ");
+	scanf("%10s",&wyp.data_zwrotu);
+	//printf("MakeWypozyczenia data zwrotu %d",wyp.data_zwrotu);
+	printf("Podaj kacuje: ");
+	scanf("%f",&wyp.kaucja);
+	//printf("MakeWypozyczenia kaucja %f",wyp.kaucja);
+	printf("Podaj cene");
+	scanf("%f",&wyp.cena);
+	//printf("MakeWypozyczenia cena %f",wyp.cena);
+	return wyp;
+}
+
+
+void Zwroc(){
 }

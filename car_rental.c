@@ -28,6 +28,7 @@ int main(){
 	puts("\nTablice wczytane");
 
 	//main program loop
+	puts("Wpisz pomoc aby wyswietlic wszystkie dostepne komendy");
 	while(loop){
 		/*
 komendy:
@@ -50,6 +51,10 @@ komendy:
 		wypozyczenia
 	wypozycz
 	zwroc
+	//nowe
+	pokazWypozyczenia
+		osoby
+		auta
 
 		  */
 		puts("\n\nPodaj komende:\n");
@@ -169,10 +174,15 @@ komendy:
 				SearchWypozyczenie(tWypozyczenia,linesW);
 		}
 		else if(strcasecmp(cmd,"wypozycz")==0){
-		
+			linesW = AddWypozyczenie(Wypozycz(&tOsoby,&tAuta,&tWypozyczenia,linesO,linesA,linesW),&tWypozyczenia,linesW);	
 		}
 		else if(strcasecmp(cmd,"zwroc")==0){
 		
+		}
+		else if(strcasecmp(cmd,"edytuj")==0){
+			scanf("%s",&cmd);
+			if(strcasecmp(cmd,"osobe")==0)
+				EditOsoba(&tOsoby,linesO);
 		}
 		else if(strcasecmp(cmd,"zamknij")==0){
 			puts("Zapisywanie plikow");
