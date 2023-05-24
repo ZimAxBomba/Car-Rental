@@ -928,6 +928,7 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 
 	char cmd[50];
 	int index;
+	int error=0;
 	struct Wypozyczenia wyp;
 	wyp.nr_wyp = CountLines("Wypozyczenia.txt")+1;	
 
@@ -961,31 +962,37 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 		}while(loop);
 
 	loop=1;
-
-	printf("\nPodaj Index samochodu: ");
 	do{
-		scanf("%s",&cmd);
-		if(strlen(cmd)==1 || atoi(cmd)){
-			loop=0;
-			index = atoi(cmd);
-			wyp.nr_samochodu = (*a)[index].nr_samochodu;
-			(*a)[index].wyp=1;
-		}
-		else if(strcasecmp(cmd,"wyswietl")==0){
-			printf("Nr. samochodu|Rejestracja|Marka|Model|Rok|Kolor|Przebieg|Wypozyczony \n");
-				if(!linesA)
-					puts("Brak aut");
-				int i;
-				for(i=0;i<linesA;i++){
-					printf("%d.|",i);
-					WyswietlAuto(a,i);
-					}			
-					loop=0;
+		printf("\nPodaj Index samochodu: ");
+		do{
+			scanf("%s",&cmd);
+			if(strlen(cmd)==1 || atoi(cmd)){
+				loop=0;
+				index = atoi(cmd);
+				if((*a)[index].wyp){
+					puts("Blad! Nie mozna wypozyczyc juz wypozyczonego auta");
+					error=1;
+					break;
+				}
+				wyp.nr_samochodu = (*a)[index].nr_samochodu;
+				(*a)[index].wyp=1;
 			}
-		else if(strcasecmp(cmd,"szukaj")==0){
-			SearchAuto(*a,linesA);
-			}
-		}while(loop);
+			else if(strcasecmp(cmd,"wyswietl")==0){
+				printf("Nr. samochodu|Rejestracja|Marka|Model|Rok|Kolor|Przebieg|Wypozyczony \n");
+					if(!linesA)
+						puts("Brak aut");
+					int i;
+					for(i=0;i<linesA;i++){
+						printf("%d.|",i);
+						WyswietlAuto(a,i);
+						}			
+						loop=0;
+				}
+			else if(strcasecmp(cmd,"szukaj")==0){
+				SearchAuto(*a,linesA);
+				}
+			}while(loop);
+	}while(!error);
 
 	printf("\nPodaj date wypozyczenia dd-mm-yyyy: ");
 	scanf("%10s",&wyp.data_wyp);
