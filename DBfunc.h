@@ -926,6 +926,75 @@ void EditOsoba(struct Osoba **o,int lines){
 	}
 }
 
+void EditAuto(struct Auto **a,int lines){
+	int index;
+	char cmd[50];
+	int lop=1;
+	puts("Edytowac ktory rekord? Wpisz wyswietl aby pokazac wszystkie rekordy\n");
+	puts("Wpisz szukaj aby wyszukac rekord\n");
+	while(lop){
+		scanf("%s",&cmd);
+		if(strlen(cmd)==1 || atoi(cmd)){
+			index=atoi(cmd);
+			while(lop){
+				puts("Ktore pole edytowac? Wpisz wyswietl aby wyswietlic dostepne pola");
+				scanf("%s",&cmd);
+				if(strcasecmp(cmd,"rejestracja")==0){
+					puts("Podaj nowa rejestracje:\n");
+					scanf("%s",cmd);
+					memcpy((*a)[index].rejestracja,cmd,sizeof((*a)[index].rejestracja));
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"marka")==0){
+					puts("Podaj nowa marke:\n");
+					scanf("%s",cmd);
+					memcpy((*a)[index].marka,cmd,sizeof((*a)[index].marka));
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"model")==0){
+					puts("Podaj nowy model:\n");
+					scanf("\n%[^\n]",&cmd);
+					memcpy((*a)[index].model,cmd,sizeof((*a)[index].model));
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"rok")==0){
+					puts("Podaj nowy rok:\n");
+					scanf("%s",&cmd);
+					memcpy((*a)[index].rok,cmd,sizeof((*a)[index].rok));
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"przebieg")==0){
+					puts("Podaj nowy przebieg:\n");
+					scanf("%s",&cmd);
+					(*a)[index].przebieg = atoi(cmd);
+					lop=0;
+				}
+				else if(strcasecmp(cmd,"kolor")==0){
+					puts("Podaj nowy kolor:\n");
+					scanf("%s",&cmd);
+					memcpy((*a)[index].kolor,cmd,sizeof((*a)[index].kolor));
+					lop=0;
+				}
+				
+				else if(strcasecmp(cmd,"wyswietl")==0)
+						RekordHelper("auto");
+			}
+		}
+		else if(strcasecmp(cmd,"wyswietl")==0){
+			printf("Nr. samochodu|Rejestracja|Marka|Model|Rok|Kolor|Przebieg|Wypozyczony \n");
+				if(!lines)
+					puts("Brak aut");
+			int i;
+			for(i=0;i<lines;i++){
+				printf("%d.|",i);
+				WyswietlAuto(a,i);
+				}				
+		}
+		else if(strcasecmp(cmd,"szukaj")==0)
+			SearchAuto(*a,lines);
+	}
+}
+
 struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
 
 	char cmd[50];

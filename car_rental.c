@@ -183,6 +183,8 @@ komendy:
 			scanf("%s",&cmd);
 			if(strcasecmp(cmd,"osobe")==0)
 				EditOsoba(&tOsoby,linesO);
+			else if(strcasecmp(cmd,"auto")==0)
+				EditAuto(&tAuta,linesA);
 		}
 		else if(strcasecmp(cmd,"wypozyczenia")==0){
 			scanf("%s",&cmd);
