@@ -135,6 +135,7 @@ komendy:
 						SearchOsoba(tOsoby,linesO);
 				}
 			}
+		}
 		else if(strcasecmp(cmd,"auto")==0){
 			int lop=1;
 			char temp[50];
@@ -162,7 +163,6 @@ komendy:
 				else if(strcasecmp(temp,"szukaj")==0)
 					SearchAuto(tAuta,linesA);
 			}	
-			}
 		}
 		else if(strcasecmp(cmd,"szukaj")==0){
 			scanf("%s",&cmd);
@@ -177,12 +177,20 @@ komendy:
 			linesW = AddWypozyczenie(Wypozycz(&tOsoby,&tAuta,&tWypozyczenia,linesO,linesA,linesW),&tWypozyczenia,linesW);	
 		}
 		else if(strcasecmp(cmd,"zwroc")==0){
-		
+			Zwroc(&tOsoby,&tAuta,&tWypozyczenia,linesO,linesA,linesW);
 		}
 		else if(strcasecmp(cmd,"edytuj")==0){
 			scanf("%s",&cmd);
 			if(strcasecmp(cmd,"osobe")==0)
 				EditOsoba(&tOsoby,linesO);
+		}
+		else if(strcasecmp(cmd,"wypozyczenia")==0){
+			scanf("%s",&cmd);
+			if(strcasecmp(cmd,"osoby")==0){
+				PokazWypozyczeniaOsoba(&tOsoby,&tAuta,&tWypozyczenia,linesO,linesA,linesW);
+			}
+			else if(strcasecmp(cmd,"auta")==0);
+				PokazWypozyczeniaAuta(&tOsoby,&tAuta,&tWypozyczenia,linesO,linesA,linesW);
 		}
 		else if(strcasecmp(cmd,"zamknij")==0){
 			puts("Zapisywanie plikow");
@@ -240,7 +248,5 @@ komendy:
 				}
 			puts("Zapisano wypozyczenia");
 		}
-
-
 	}
-	}
+}
