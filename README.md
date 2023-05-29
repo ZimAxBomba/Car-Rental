@@ -2,7 +2,7 @@
 
 ## Do zrobienia:
 - ~~dokonczenie usuwania w mainie~~
-- edycja rekordow (1/2)
+- ~~edycja rekordow~~
 - ~~wypozyczanie samochodow (sprawdzanie relacji pomiedzy rekordami w tablicach)~~
 - ~~zwracanie samochodow~~
 - sprawdzanie czasu w wypozyczeniach
