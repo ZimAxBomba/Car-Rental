@@ -28,7 +28,7 @@ int main(){
 	puts("\nTablice wczytane");
 
 	//main program loop
-	puts("Wpisz pomoc aby wyswietlic wszystkie dostepne komendy");
+	puts("\nWpisz pomoc aby wyswietlic wszystkie dostepne komendy");
 	while(loop){
 		/*
 komendy:
@@ -61,9 +61,10 @@ komendy:
 		scanf("%s",&cmd);
 		//else if ladder eeeeww
 		if(strcasecmp(cmd,"pomoc")==0){
-			printf("Dostepne komendy:\n\tWyswietl\n\t\t osoby\n\t\t auta\n\t\t wypozyczenia\n\t Dodaj\n\t\t osobe\n\t\t auto\n\t Edytuj\n\t\t osobe\n\t\t auto\n\t Usun\n\t\t osobe\n\t\t auto\n\t Szukaj\n\t\t osobe\n\t\t auto\n\t\t wypozyczenia\n\t Wypozycz\n\t Zwroc");
+			printf("Dostepne komendy:\n\tWyswietl\n\t\t osoby\n\t\t auta\n\t\t wypozyczenia\n\t Dodaj\n\t\t osobe\n\t\t auto\n\t Edytuj\n\t\t osobe\n\t\t auto\n\t Usun\n\t\t osobe\n\t\t auto\n\t Szukaj\n\t\t osobe\n\t\t auto\n\t\t wypozyczenia\n\t Wypozycz\n\t Zwroc\n\t Wypozyczenia\n\t\t osoby\n\t\t auta");
 		}
 		else if(strcasecmp(cmd,"wyswietl")==0){
+			printf("(osoby|auta|wypozyczenia)\n");
 			scanf("%s)",&cmd);
 			if(strcasecmp(cmd,"osoby")==0){
 				printf("Index|Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
@@ -99,13 +100,15 @@ komendy:
 
 
 		else if(strcasecmp(cmd,"dodaj")==0){
+			printf("(osobe|auto)\n");
 			scanf("%s",&cmd);
 			if(strcasecmp(cmd,"osobe")==0)
-			       	linesO = AddOsoba(MakeOsoba(),&tOsoby,linesO);
+			       	linesO = AddOsoba(MakeOsoba(&tOsoby,linesO),&tOsoby,linesO);
 			else if(strcasecmp(cmd,"auto")==0)
-				linesA = AddAuto(MakeAuto(),&tAuta,linesA);
+				linesA = AddAuto(MakeAuto(&tAuta,linesA),&tAuta,linesA);
 		}
 		else if(strcasecmp(cmd,"usun")==0){
+			printf("(osobe|auto)\n");
 			scanf("%s",&cmd);
 			if(strcasecmp(cmd,"osobe")==0){
 				int lop=1;
@@ -165,6 +168,7 @@ komendy:
 			}	
 		}
 		else if(strcasecmp(cmd,"szukaj")==0){
+			printf("(osobe|auto|wypozyczenie)\n");
 			scanf("%s",&cmd);
 			if(strcasecmp(cmd,"osobe")==0)
 				SearchOsoba(tOsoby,linesO);
@@ -180,6 +184,7 @@ komendy:
 			Zwroc(&tOsoby,&tAuta,&tWypozyczenia,linesO,linesA,linesW);
 		}
 		else if(strcasecmp(cmd,"edytuj")==0){
+			printf("(osobe|auto)\n");
 			scanf("%s",&cmd);
 			if(strcasecmp(cmd,"osobe")==0)
 				EditOsoba(&tOsoby,linesO);
@@ -187,11 +192,11 @@ komendy:
 				EditAuto(&tAuta,linesA);
 		}
 		else if(strcasecmp(cmd,"wypozyczenia")==0){
+			printf("(osoby|auta)\n");
 			scanf("%s",&cmd);
-			if(strcasecmp(cmd,"osoby")==0){
+			if(strcasecmp(cmd,"osoby")==0)
 				PokazWypozyczeniaOsoba(&tOsoby,&tAuta,&tWypozyczenia,linesO,linesA,linesW);
-			}
-			else if(strcasecmp(cmd,"auta")==0);
+			else if(strcasecmp(cmd,"auta")==0)
 				PokazWypozyczeniaAuta(&tOsoby,&tAuta,&tWypozyczenia,linesO,linesA,linesW);
 		}
 		else if(strcasecmp(cmd,"zamknij")==0){

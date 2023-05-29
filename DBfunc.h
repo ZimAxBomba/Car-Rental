@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 struct Auto{
 	unsigned int nr_samochodu;
 	unsigned char rejestracja[8];
@@ -276,10 +277,9 @@ int InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
 }
 
 int AddOsoba(struct Osoba temp,struct Osoba **tOsoby,int lines){
-	*tOsoby = realloc(*tOsoby,(lines+1)*sizeof(struct Osoba));
-
+		*tOsoby = realloc(*tOsoby,(lines+1)*sizeof(struct Osoba));
+		
 		(*tOsoby)[lines].nr_klienta = temp.nr_klienta;
-		printf("AddOsoba nr_klienta %d",temp.nr_klienta);
 		memcpy((*tOsoby)[lines].karta,temp.karta,sizeof(temp.karta));
 		memcpy((*tOsoby)[lines].imie,temp.imie,sizeof(temp.imie));
 		memcpy((*tOsoby)[lines].nazwisko,temp.nazwisko,sizeof(temp.nazwisko));
@@ -307,7 +307,7 @@ int AddWypozyczenie(struct Wypozyczenia	temp,struct Wypozyczenia **tWypozyczenia
 	if(temp.cena==0)
 		return lines;
 	*tWypozyczenia = realloc(*tWypozyczenia,(lines+1)*sizeof(struct Wypozyczenia));
-
+	
 	(*tWypozyczenia)[lines].nr_wyp = temp.nr_wyp;
 	(*tWypozyczenia)[lines].nr_klienta = temp.nr_klienta;
 	(*tWypozyczenia)[lines].nr_samochodu = temp.nr_samochodu;
@@ -377,8 +377,12 @@ void WyswietlWypozyczenie(struct Wypozyczenia **w,int i){
 
 
 
-struct Osoba MakeOsoba(){
+struct Osoba MakeOsoba(struct Osoba **o,int lines){
 	struct Osoba os;
+	if(lines==0)
+		os.nr_klienta = 1;
+	else
+		os.nr_klienta = (*o)[lines-1].nr_klienta+1;
 	//printf("Podaj numer klienta: ");
 	//scanf("%d",&os.nr_klienta);
 	//printf("MakeOsoba nr_klienta %d",&os.nr_klienta);
@@ -395,8 +399,12 @@ struct Osoba MakeOsoba(){
 	return os;
 }
 
-struct Auto MakeAuto(){
+struct Auto MakeAuto(struct Auto **a,int lines){
 	struct Auto au;
+	if(lines==0)
+		au.nr_samochodu = 1;
+	else
+		au.nr_samochodu = (*a)[lines-1].nr_samochodu+1;
 	//printf("Podaj numer samochodu: ");
 	//scanf("%d",&au.nr_samochodu);
 	printf("\nPodaj rejestracje: ");
@@ -409,6 +417,8 @@ struct Auto MakeAuto(){
 	scanf("%4s",&au.rok);
 	printf("Podaj kolor: ");
 	scanf("%s",&au.kolor);
+	printf("Podaj przebieg: ");
+	scanf("%d",&au.przebieg);
 	return au;
 }
 
@@ -1076,7 +1086,7 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 	printf("Podaj kacuje: ");
 	scanf("%f",&wyp.kaucja);
 	//printf("MakeWypozyczenia kaucja %f",wyp.kaucja);
-	printf("Podaj cene");
+	printf("Podaj cene: ");
 	scanf("%f",&wyp.cena);
 	//printf("MakeWypozyczenia cena %f",wyp.cena);
 	return wyp;
@@ -1091,8 +1101,10 @@ void Zwroc(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,i
 	puts("Wpisz wyswietl aby zobaczyc wszystkie wypozyczenia");
 	puts("Wpisz szukaj aby wyszukac wypozyczenie");
 	while(loop){
+		int picked = 0;
 		scanf("%s",&cmd);
 		if(strcasecmp(cmd,"wyswietl")==0){
+			picked = 1;
 			printf("Nr. wypozyczenia|Nr. klienta|Nr. samochodu|Data wypozyczenia|Data zwrotu|Kaucja|Cena \n");
 			if(!linesW)
 				puts("Brak wypozyczen");
@@ -1104,15 +1116,19 @@ void Zwroc(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,i
 			}
 		else if(strcasecmp(cmd,"szukaj")==0){
 			SearchWypozyczenie(*w,linesW); 	
+			picked = 1;
 		}
-		else if(strlen(cmd)==1 || atoi(cmd)){
+		else if(strlen(cmd)==1 || atoi(cmd) || picked==0){
+			printf("%d\n\n\n",atoi(cmd));
 			loop=0;
 			index = atoi(cmd);
-			}
+			
 			RemoveWypozyczenie(index,w);
 			//remove tags from osoby auta
 			int os = (*w)[index].nr_klienta;
+			printf("nr_klienta = %d\n",os);
 			int au = (*w)[index].nr_samochodu;
+			printf("nr_auta = %d\n",au);
 			//osoby
 			for(int i=0;i<linesO;i++){
 				if((*o)[i].nr_klienta==os)
@@ -1124,6 +1140,8 @@ void Zwroc(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,i
 					(*a)[i].wyp=0;
 			}
 		}
+		picked=0;
+	}
 }
 
 void PokazWypozyczeniaOsoba(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
@@ -1163,6 +1181,7 @@ void PokazWypozyczeniaOsoba(struct Osoba **o,struct Auto **a,struct Wypozyczenia
 				}
 				loop=0;
 			}
+			if(loop==0){
 			int i;
 			printf("\nWypozyczenia:");
 			printf("Nr. wypozyczenia|Nr. klienta|Nr. samochodu|Data wypozyczenia|Data zwrotu|Kaucja|Cena \n");
@@ -1172,13 +1191,14 @@ void PokazWypozyczeniaOsoba(struct Osoba **o,struct Auto **a,struct Wypozyczenia
 				for(int j=0;j<linesA;j++){
 					if(temp[i].nr_samochodu==(*a)[j].nr_samochodu){
 						WyswietlAuto(a,j);
-					}
+						}
 				
-				}
+					}
 			
+				}
 			}
-		
 		}
+		
 	}
 }
 
