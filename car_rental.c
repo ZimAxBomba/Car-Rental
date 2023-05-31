@@ -30,6 +30,7 @@ int main(){
 	//main program loop
 	puts("\nWpisz pomoc aby wyswietlic wszystkie dostepne komendy");
 	while(loop){
+		UpdateWypozyczenia(&tOsoby,&tAuta,&tWypozyczenia,linesO,linesA,linesW);
 		/*
 komendy:
 	wyswietl

@@ -365,7 +365,7 @@ void WyswietlAuto(struct Auto **a,int i){
 void WyswietlWypozyczenie(struct Wypozyczenia **w,int i){
 		if((*w)[i].cena==0.0)
 			return;
-		printf("%d | %d | %d | %s | %s | %f | %f\n",
+		printf("%d | %d | %d | %s | %s | %.2f | %.2f\n",
 				(*w)[i].nr_wyp,
 				(*w)[i].nr_klienta,
 				(*w)[i].nr_samochodu,
@@ -1043,17 +1043,24 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 			}
 		}
 
+	printf("\nPodaj date wypozyczenia dd-mm-yyyy: ");
+	scanf("%s",&wyp.data_wyp);
+	printf("\nPodaj date zwrotu dd-mm-yyyy: ");
+	scanf("%s",&wyp.data_zwrotu);
+
+
 	loop=1;
 	while(loop){
 		printf("\nPodaj Index samochodu: ");
-		puts("\nWpisz wyswietl aby wyswietlic wszystkie osoby");
-		puts("Wpisz szukaj aby wyszukac osobe");
+		puts("\nWpisz wyswietl aby wyswietlic wszystkie samochody");
+		puts("Wpisz szukaj aby wyszukac samochod");
 		while(loop){
 			scanf("%s",&cmd);
 			if(strlen(cmd)==1 || atoi(cmd)){
 				loop=0;
 				index = atoi(cmd);
 				if((*a)[index].wyp){
+					//check dates
 					puts("Blad! Nie mozna wypozyczyc juz wypozyczonego auta");
 					wyp.cena=0;
 					return wyp;
@@ -1077,18 +1084,10 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 			}
 	}
 
-	printf("\nPodaj date wypozyczenia dd-mm-yyyy: ");
-	scanf("%10s",&wyp.data_wyp);
-	//printf("MakeWypozyczenia data wyp %d",wyp.data_wyp);
-	printf("\nPodaj date zwrotu dd-mm-yyyy: ");
-	scanf("%10s",&wyp.data_zwrotu);
-	//printf("MakeWypozyczenia data zwrotu %d",wyp.data_zwrotu);
 	printf("Podaj kacuje: ");
 	scanf("%f",&wyp.kaucja);
-	//printf("MakeWypozyczenia kaucja %f",wyp.kaucja);
 	printf("Podaj cene: ");
 	scanf("%f",&wyp.cena);
-	//printf("MakeWypozyczenia cena %f",wyp.cena);
 	return wyp;
 }
 
@@ -1144,6 +1143,8 @@ void Zwroc(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,i
 	}
 }
 
+
+
 void PokazWypozyczeniaOsoba(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
 	char cmd[100];
 	//tablica pasujacych rekordow
@@ -1185,6 +1186,9 @@ void PokazWypozyczeniaOsoba(struct Osoba **o,struct Auto **a,struct Wypozyczenia
 			int i;
 			printf("\nWypozyczenia:");
 			printf("Nr. wypozyczenia|Nr. klienta|Nr. samochodu|Data wypozyczenia|Data zwrotu|Kaucja|Cena \n");
+			if(!linesW)
+				puts("Brak wypozyczen");
+			else{
 			for(i=0;i<tempLines;i++){
 				printf("%d.|",tempId[i]);
 				WyswietlWypozyczenie(&temp,i);
@@ -1196,6 +1200,7 @@ void PokazWypozyczeniaOsoba(struct Osoba **o,struct Auto **a,struct Wypozyczenia
 					}
 			
 				}
+			}
 			}
 		}
 		
@@ -1243,18 +1248,99 @@ void PokazWypozyczeniaAuta(struct Osoba **o,struct Auto **a,struct Wypozyczenia 
 			int i;
 			printf("\nWypozyczenia:");
 			printf("Nr. wypozyczenia|Nr. klienta|Nr. samochodu|Data wypozyczenia|Data zwrotu|Kaucja|Cena \n");
-			for(i=0;i<tempLines;i++){
-				printf("%d.|",tempId[i]);
-				WyswietlWypozyczenie(&temp,i);
-				for(int j=0;j<linesO;j++){
-					if(temp[i].nr_klienta==(*o)[j].nr_klienta){
-						WyswietlOsoba(o,j);
+			if(!linesW)
+				puts("Brak wypozyczen");
+			else{
+				for(i=0;i<tempLines;i++){
+					printf("%d.|",tempId[i]);
+					WyswietlWypozyczenie(&temp,i);
+					for(int j=0;j<linesO;j++){
+						if(temp[i].nr_klienta==(*o)[j].nr_klienta){
+							WyswietlOsoba(o,j);
 					}
 				
 				}
 			
 			}
-		
+			}
+		}
+	}
+}
+
+int CompareTime(char time1[11],char time2[11]){
+	//1 - time1 wieksze
+	//0 - rowne
+	//-1 - time2 wieksze
+	int d1,m1,y1;
+	int d2,m2,y2;
+	/*
+	d1 = atoi(strtok(time1,"-"));
+	m1 = atoi(strtok(NULL,"-"));
+	y1 = atoi(strtok(NULL,"-"));
+	//printf("\n%d %d %d",d1,m1,y1);
+
+
+	d2 = atoi(strtok(time2,"-"));
+	m2 = atoi(strtok(NULL,"-"));
+	y2 = atoi(strtok(NULL,"-"));
+	//printf("\n%d %d %d",d2,m2,y2);
+	*/
+
+	sscanf(time1,"%d-%d-%d",&d1,&m1,&y1);
+	sscanf(time2,"%d-%d-%d",&d2,&m2,&y2);
+
+	if(y1>y2)
+		return 1;
+	else if(y1<y2)
+		return -1;
+	else{
+		if(m1>m2)
+			return 1;
+		else if(m1<m2)
+			return -1;
+		else{
+			if(d1>d2)
+				return 1;
+			else if(d1<d2)
+				return -1;
+			else
+				return 0;
+		}
+	}
+}
+
+char* CurrentTime(){
+	time_t now;
+	struct tm t;
+	time(&now);
+	t = *localtime(&now);
+	char *returnTime = malloc(sizeof(char)*11);
+
+	sprintf(returnTime,"%d-%d-%d",t.tm_mday,t.tm_mon+1,t.tm_year+1900);
+	return returnTime;
+}
+
+
+void UpdateWypozyczenia(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
+
+	char *currentTime = CurrentTime();
+	//check if rental expired
+	for(int i=0;i<linesW;i++){
+		if(CompareTime(currentTime,(*w)[i].data_zwrotu)==1){
+			RemoveWypozyczenie(i,w);
+			//remove tags from osoby auta
+			int os = (*w)[i].nr_klienta;
+			int au = (*w)[i].nr_samochodu;
+			//osoby
+			for(int j=0;j<linesO;j++){
+				if((*o)[j].nr_klienta==os)
+					(*o)[j].wyp=0;
+			}
+			//auta
+			for(int j=0;j<linesA;j++){
+				if((*a)[j].nr_samochodu==au)
+					(*a)[j].wyp=0;
+			}	
 		}
 	}
 }
