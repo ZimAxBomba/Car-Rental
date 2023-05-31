@@ -1,6 +1,7 @@
 # Wypozyczalnia samochodow
 
 ## Do zrobienia:
+- Dodanie mozliwosci wypozyczenia tego samego auta jesli daty sie nie pokrywaja
 - ~~dokonczenie usuwania w mainie~~
 - ~~edycja rekordow~~
 - ~~wypozyczanie samochodow (sprawdzanie relacji pomiedzy rekordami w tablicach)~~
