@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <ctype.h>
 struct Auto{
 	unsigned int nr_samochodu;
 	unsigned char rejestracja[8];
@@ -181,6 +182,124 @@ int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 		w->cena = atof(temp);
 	}
 	return pos;
+}
+
+int CheckIfNumber(char str[20]){
+	//for supporting floats
+	int dot=0;
+	for(int i=0;i<strlen(str);i++){
+		if(!isdigit(str[i])){
+			if(str[i]=='.')
+				dot++;
+			else
+				return 0;
+			if(dot>1)
+				return 0;
+		}
+
+	}
+	return 1;
+}
+
+int CompareTime(char time1[11],char time2[11]){
+	//1 - time1 wieksze
+	//0 - rowne
+	//-1 - time2 wieksze
+	int d1,m1,y1;
+	int d2,m2,y2;
+	/*
+	d1 = atoi(strtok(time1,"-"));
+	m1 = atoi(strtok(NULL,"-"));
+	y1 = atoi(strtok(NULL,"-"));
+	//printf("\n%d %d %d",d1,m1,y1);
+
+
+	d2 = atoi(strtok(time2,"-"));
+	m2 = atoi(strtok(NULL,"-"));
+	y2 = atoi(strtok(NULL,"-"));
+	//printf("\n%d %d %d",d2,m2,y2);
+	*/
+
+	sscanf(time1,"%d-%d-%d",&d1,&m1,&y1);
+	sscanf(time2,"%d-%d-%d",&d2,&m2,&y2);
+
+	if(y1>y2)
+		return 1;
+	else if(y1<y2)
+		return -1;
+	else{
+		if(m1>m2)
+			return 1;
+		else if(m1<m2)
+			return -1;
+		else{
+			if(d1>d2)
+				return 1;
+			else if(d1<d2)
+				return -1;
+			else
+				return 0;
+		}
+	}
+}
+
+
+char* CurrentTime(){
+	time_t now;
+	struct tm t;
+	time(&now);
+	t = *localtime(&now);
+	char *returnTime = malloc(sizeof(char)*11);
+
+	sprintf(returnTime,"%d-%d-%d",t.tm_mday,t.tm_mon+1,t.tm_year+1900);
+	return returnTime;
+}
+
+int ValidateDate(char date[11]){
+	//check if date format is valid
+	for(int i=0;i<2;i++){
+		if(!isdigit(date[i])){
+			return 0;
+		}
+			}
+	if(date[2]!='-')
+		return 0;
+	for(int i=3;i<5;i++){
+		if(!isdigit(date[i])){
+			return 0;
+			}
+		}
+	if(date[5]!='-')
+		return 0;
+	for(int i=6;i<10;i++){
+		if(!isdigit(date[i])){
+			return 0;
+			}
+		}
+	//check if date is too old or out of bounds
+	char *currentDate = CurrentTime();
+	int cd,cm,cy;
+	sscanf(currentDate,"%d-%d-%d",&cd,&cm,&cy);
+	int d,m,y;
+	sscanf(date,"%d-%d-%d",&d,&m,&y);
+
+	if(d>31){
+		puts("Data jest niepoprawna, za duzo dni w miesiacu");
+		return 0;
+	}
+
+	if(m>12){
+		puts("Data jest niepoprawna, miesiac nie moze byc wiekszy niz 12");
+		return 0;
+	}
+/*
+	if(y<2023){
+		puts("Nie mozna wypozycz auta w przeslosci");
+		return 0;
+	}
+*/	
+
+	return 1;
 }
 
 //czysci plik txt (zapisuje go jako backup - w przyszlosci)
@@ -386,16 +505,76 @@ struct Osoba MakeOsoba(struct Osoba **o,int lines){
 	//printf("Podaj numer klienta: ");
 	//scanf("%d",&os.nr_klienta);
 	//printf("MakeOsoba nr_klienta %d",&os.nr_klienta);
+	int loop = 1;
+	char temp[50];
+
 	printf("\nPodaj numer karty: ");
-	scanf("%16s",&os.karta);
+	while(loop){
+		scanf("%s",&temp);
+		if(strlen(temp)==16){
+			memcpy(os.karta,temp,sizeof(os.karta));
+			loop=0;
+		}
+		else if(CheckIfNumber(temp)==0)
+			puts("Nr karty musi byc liczba");
+		else if(strlen(temp)!=16)
+			puts("Niepoprawna dlugosc nr karty, powinna wynosic 16 cyfr");
+	}
+	loop=1;
 	printf("\nPodaj imie: ");
-	scanf("%s",&os.imie);
+	while(loop){
+		scanf("%s",&temp);
+		if(CheckIfNumber(temp)==1)
+			puts("Imie nie moze byc liczba");
+		else if(strlen(temp)<20){
+			memcpy(os.imie,temp,sizeof(os.imie));
+			loop=0;
+		}
+		
+		else if(strlen(temp)>20)
+			puts("Imie jest zbyt dlugie");
+	}
+	loop=1;
 	printf("\nPodaj nazwisko: ");
-	scanf("%s",&os.nazwisko);
+	while(loop){
+		scanf("%s",&temp);
+		
+		if(CheckIfNumber(temp)==1)
+			puts("Nazwisko nie moze byc liczba");
+		else if(strlen(temp)>50)
+			puts("Nazwisko jest zbyt dlugie");
+		else if(strlen(temp)<50){
+			memcpy(os.nazwisko,temp,sizeof(os.nazwisko));
+			loop=0;
+		}
+	}
+	loop=1;
 	printf("\nPodaj adres: ");
-	scanf("\n%[^\n]",&os.adres);
+	while(loop){
+		scanf("\n%[^\n]",&temp);
+		
+		if(strlen(temp)>50)
+			puts("Adres jest zbyt dlugi");
+		else if(strlen(temp)<50){
+			memcpy(os.adres,temp,sizeof(os.adres));
+			loop=0;
+		}
+	}
+	loop=1;
 	printf("Podaj numer telefonu: ");
-	scanf("%9s",&os.telefon);
+	while(loop){
+		scanf("%s",&temp);
+		
+		if(CheckIfNumber(temp)==0)
+			puts("Nr telefonu musi byc liczba");
+		else if(strlen(temp)!=9)
+			puts("Niepoprawna dlugosc nr telefonu, powinna wynosic 9 cyfr");
+		else if(strlen(temp)==9){
+			memcpy(os.telefon,temp,sizeof(os.telefon));
+			loop=0;
+		}
+	}
+	os.wyp=0;
 	return os;
 }
 
@@ -407,18 +586,84 @@ struct Auto MakeAuto(struct Auto **a,int lines){
 		au.nr_samochodu = (*a)[lines-1].nr_samochodu+1;
 	//printf("Podaj numer samochodu: ");
 	//scanf("%d",&au.nr_samochodu);
+
+	int loop = 1;
+	char temp[50];
+	
 	printf("\nPodaj rejestracje: ");
-	scanf("%7s",&au.rejestracja);
+	while(loop){
+		scanf("%s",&temp);
+		if(strlen(temp)==7){
+			memcpy(au.rejestracja,temp,sizeof(au.rejestracja));
+			loop=0;
+		}
+		else if(strlen(temp)!=16)
+			puts("Niepoprawna dlugosc rejestracji, powinna wynosic 7 znakow");
+	}
+	loop=1;
 	printf("\nPodaj marke: ");
-	scanf("%s",&au.marka);
+	while(loop){
+		scanf("%s",&temp);
+		if(strlen(temp)<20){
+			memcpy(au.marka,temp,sizeof(au.marka));
+			loop=0;
+		}
+		
+		else if(strlen(temp)>20)
+			puts("Marka jest zbyt dluga");
+	}
+	loop=1;
 	printf("\nPodaj model: ");
-	scanf("%s",&au.model);
+	while(loop){
+		scanf("%s",&temp);
+		if(strlen(temp)<50){
+			memcpy(au.model,temp,sizeof(au.model));
+			loop=0;
+		}
+		
+		else if(strlen(temp)>50)
+			puts("Model jest zbyt dlugi");
+	}
+	loop=1;
 	printf("\nPodaj rok: ");
-	scanf("%4s",&au.rok);
+	while(loop){
+		scanf("%s",&temp);
+		if(strlen(temp)==4 && CheckIfNumber(temp)==1){
+			memcpy(au.rok,temp,sizeof(au.rok));
+			loop=0;
+		}
+		
+		else if(strlen(temp)!=4)
+			puts("Rok ma nieprawidlowa dlugosc");
+		else if(CheckIfNumber(temp)!=1)
+			puts("Rok musi byc liczba skladajaca sie z 4 cyfr");
+
+	}
+	loop=1;
 	printf("Podaj kolor: ");
-	scanf("%s",&au.kolor);
+	while(loop){
+		scanf("%s",&temp);
+		if(strlen(temp)<10){
+			memcpy(au.kolor,temp,sizeof(au.kolor));
+			loop=0;
+		}
+		
+		else if(strlen(temp)>10)
+			puts("Kolor jest zbyt dlugi");
+	}
+	loop=1;
 	printf("Podaj przebieg: ");
-	scanf("%d",&au.przebieg);
+	while(loop){
+		scanf("%s",&temp);
+		if(CheckIfNumber(temp)==1){
+			memcpy(au.kolor,temp,sizeof(au.kolor));
+			loop=0;
+		}
+		
+		else
+			puts("Przebieg musi byc liczba");
+	}
+	au.wyp=0;
 	return au;
 }
 
@@ -875,48 +1120,94 @@ void EditOsoba(struct Osoba **o,int lines){
 	puts("Wpisz szukaj aby wyszukac rekord\n");
 	while(lop){
 		scanf("%s",&cmd);
-		if(strlen(cmd)==1 || atoi(cmd)){
+		if(CheckIfNumber(cmd)){
 			index=atoi(cmd);
 			while(lop){
 				puts("Ktore pole edytowac? Wpisz wyswietl aby wyswietlic dostepne pola");
 				scanf("%s",&cmd);
 				if(strcasecmp(cmd,"imie")==0){
+					int loop=1;
 					puts("Podaj nowe imie:\n");
-					scanf("%s",cmd);
-					memcpy((*o)[index].imie,cmd,sizeof((*o)[index].imie));
+					while(loop){
+						scanf("%s",&cmd);
+						if(CheckIfNumber(cmd)==1)
+							puts("Imie nie moze byc liczba");
+						else if(strlen(cmd)<20){
+							memcpy((*o)[index].imie,cmd,sizeof((*o)[index].imie));
+							loop=0;
+						}
+						
+						else if(strlen(cmd)>20)
+							puts("Imie jest zbyt dlugie");
+					}
+
 					lop=0;
 				}
 				else if(strcasecmp(cmd,"nazwisko")==0){
+					int loop=1;
 					puts("Podaj nowe nazwisko:\n");
-					scanf("%s",cmd);
-					memcpy((*o)[index].nazwisko,cmd,sizeof((*o)[index].nazwisko));
+					while(loop){
+						scanf("%s",&cmd);
+						
+						if(CheckIfNumber(cmd)==1)
+							puts("Nazwisko nie moze byc liczba");
+						else if(strlen(cmd)>50)
+							puts("Nazwisko jest zbyt dlugie");
+						else if(strlen(cmd)<50){
+						memcpy((*o)[index].nazwisko,cmd,sizeof((*o)[index].nazwisko));
+							loop=0;
+						}
+					}
 					lop=0;
 				}
 				else if(strcasecmp(cmd,"adres")==0){
-					puts("Podaj nowy adres:\n");
-					scanf("\n%[^\n]",&cmd);
-					memcpy((*o)[index].adres,cmd,sizeof((*o)[index].adres));
+					int loop=1;
+					while(loop){
+						puts("Podaj nowy adres:\n");
+						scanf("\n%[^\n]",&cmd);
+						
+						if(strlen(cmd)>50)
+							puts("Adres jest zbyt dlugi");
+						else if(strlen(cmd)<50){
+							memcpy((*o)[index].adres,cmd,sizeof((*o)[index].adres));
+							loop=0;
+						}
+					}
 					lop=0;
 				}
 				else if(strcasecmp(cmd,"telefon")==0){
 					puts("Podaj nowy nr. telefonu:\n");
-					scanf("%s",&cmd);
-					memcpy((*o)[index].telefon,cmd,sizeof((*o)[index].telefon));
-					lop=0;
-				}
-				else if(strcasecmp(cmd,"nrklienta")==0){
-					puts("Podaj nowy nr. klienta:\n");
-					scanf("%s",&cmd);
-					(*o)[index].nr_klienta = atoi(cmd);
+					int loop=1;
+					while(loop){
+						scanf("%s",&cmd);
+						
+						if(CheckIfNumber(cmd)==0)
+							puts("Nr telefonu musi byc liczba");
+						else if(strlen(cmd)!=9)
+							puts("Niepoprawna dlugosc nr telefonu");
+						else if(strlen(cmd)==9){
+							memcpy((*o)[index].telefon,cmd,sizeof((*o)[index].telefon));
+							loop=0;
+						}
+					}
 					lop=0;
 				}
 				else if(strcasecmp(cmd,"karta")==0){
 					puts("Podaj nowy nr. karty:\n");
-					scanf("%s",&cmd);
-					memcpy((*o)[index].karta,cmd,sizeof((*o)[index].karta));
+					int loop=1;
+					while(loop){
+						scanf("%s",&cmd);
+						if(strlen(cmd)==16){
+							memcpy((*o)[index].karta,cmd,sizeof((*o)[index].karta));
+							loop=0;
+						}
+						else if(CheckIfNumber(cmd)==0)
+							puts("Nr karty musi byc liczba");
+						else if(strlen(cmd)!=16)
+							puts("Niepoprawna dlugosc nr karty");
+					}
 					lop=0;
 				}
-				
 				else if(strcasecmp(cmd,"wyswietl")==0)
 						RekordHelper("osoba");
 			}
@@ -944,45 +1235,99 @@ void EditAuto(struct Auto **a,int lines){
 	puts("Wpisz szukaj aby wyszukac rekord\n");
 	while(lop){
 		scanf("%s",&cmd);
-		if(strlen(cmd)==1 || atoi(cmd)){
+		if(CheckIfNumber(cmd)==1){
 			index=atoi(cmd);
 			while(lop){
 				puts("Ktore pole edytowac? Wpisz wyswietl aby wyswietlic dostepne pola");
 				scanf("%s",&cmd);
 				if(strcasecmp(cmd,"rejestracja")==0){
-					puts("Podaj nowa rejestracje:\n");
-					scanf("%s",cmd);
-					memcpy((*a)[index].rejestracja,cmd,sizeof((*a)[index].rejestracja));
+				printf("\nPodaj rejestracje: ");
+				int loop=1;
+				while(loop){
+					scanf("%s",&cmd);
+					if(strlen(cmd)==7){
+						memcpy((*a)[index].rejestracja,cmd,sizeof((*a)[index].rejestracja));
+						loop=0;
+					}
+					else if(strlen(cmd)!=16)
+						puts("Niepoprawna dlugosc rejestracji, powinna wynosic 7 znakow");
+				}
 					lop=0;
 				}
 				else if(strcasecmp(cmd,"marka")==0){
-					puts("Podaj nowa marke:\n");
-					scanf("%s",cmd);
-					memcpy((*a)[index].marka,cmd,sizeof((*a)[index].marka));
+					int loop=1;
+					while(loop){
+					scanf("%s",&cmd);
+					if(strlen(cmd)<20){
+						memcpy((*a)[index].marka,cmd,sizeof((*a)[index].marka));
+						loop=0;
+					}
+					
+					else if(strlen(cmd)>20)
+						puts("Marka jest zbyt dluga");
+				}
 					lop=0;
 				}
 				else if(strcasecmp(cmd,"model")==0){
-					puts("Podaj nowy model:\n");
-					scanf("\n%[^\n]",&cmd);
-					memcpy((*a)[index].model,cmd,sizeof((*a)[index].model));
+					int loop=1;
+				printf("\nPodaj model: ");
+				while(loop){
+					scanf("%s",&cmd);
+					if(strlen(cmd)<50){
+						memcpy((*a)[index].model,cmd,sizeof((*a)[index].model));
+						loop=0;
+					}
+					
+					else if(strlen(cmd)>50)
+						puts("Model jest zbyt dlugi");
+				}
 					lop=0;
 				}
 				else if(strcasecmp(cmd,"rok")==0){
-					puts("Podaj nowy rok:\n");
+					int loop=1;
+					while(loop){
 					scanf("%s",&cmd);
-					memcpy((*a)[index].rok,cmd,sizeof((*a)[index].rok));
+					if(strlen(cmd)==4 && CheckIfNumber(cmd)==1){
+						memcpy((*a)[index].rok,cmd,sizeof((*a)[index].rok));
+						loop=0;
+					}
+					
+					else if(strlen(cmd)!=4)
+						puts("Rok ma nieprawidlowa dlugosc");
+					else if(CheckIfNumber(cmd)!=1)
+						puts("Rok musi byc liczba skladajaca sie z 4 cyfr");
+
+				}
 					lop=0;
 				}
 				else if(strcasecmp(cmd,"przebieg")==0){
-					puts("Podaj nowy przebieg:\n");
+					int loop=1;
+				printf("Podaj przebieg: ");
+				while(loop){
 					scanf("%s",&cmd);
-					(*a)[index].przebieg = atoi(cmd);
+					if(CheckIfNumber(cmd)==1){
+						(*a)[index].przebieg = atoi(cmd);
+						loop=0;
+					}
+					
+					else
+						puts("Przebieg musi byc liczba");
+				}
 					lop=0;
 				}
 				else if(strcasecmp(cmd,"kolor")==0){
-					puts("Podaj nowy kolor:\n");
+					int loop=1;
+				printf("Podaj kolor: ");
+				while(loop){
 					scanf("%s",&cmd);
-					memcpy((*a)[index].kolor,cmd,sizeof((*a)[index].kolor));
+					if(strlen(cmd)<10){
+						memcpy((*a)[index].kolor,cmd,sizeof((*a)[index].kolor));
+						loop=0;
+					}
+					
+					else if(strlen(cmd)>10)
+						puts("Kolor jest zbyt dlugi");
+				}
 					lop=0;
 				}
 				
@@ -1022,7 +1367,7 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 	int loop=1;
 	while(loop){
 		scanf("%s",&cmd);
-		if(strlen(cmd)==1 || atoi(cmd)){
+		if(CheckIfNumber(cmd)){
 			loop=0;
 			index = atoi(cmd);
 			wyp.nr_klienta = (*o)[index].nr_klienta;
@@ -1041,13 +1386,31 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 		else if(strcasecmp(cmd,"szukaj")==0){
 			SearchOsoba(*o,linesO);
 			}
+		else if(!CheckIfNumber(cmd))
+				puts("Podana wartosc nie jest liczba");
 		}
-
+	int lop=1;
 	printf("\nPodaj date wypozyczenia dd-mm-yyyy: ");
-	scanf("%s",&wyp.data_wyp);
+	while(lop){
+		scanf("%s",&cmd);
+		if(ValidateDate(cmd)){
+			memcpy(wyp.data_wyp,cmd,sizeof(wyp.data_wyp));
+			lop=0;
+					}
+		else
+			puts("Data jest niepoprawna");
+	}
+	lop=1;
 	printf("\nPodaj date zwrotu dd-mm-yyyy: ");
-	scanf("%s",&wyp.data_zwrotu);
-
+	while(lop){
+		scanf("%s",&cmd);
+		if(ValidateDate(cmd)){
+			memcpy(wyp.data_wyp,cmd,sizeof(wyp.data_wyp));
+			lop=0;
+					}
+		else
+			puts("Data jest niepoprawna");
+	}
 
 	loop=1;
 	while(loop){
@@ -1056,11 +1419,21 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 		puts("Wpisz szukaj aby wyszukac samochod");
 		while(loop){
 			scanf("%s",&cmd);
-			if(strlen(cmd)==1 || atoi(cmd)){
+			if(CheckIfNumber(cmd)){
 				loop=0;
 				index = atoi(cmd);
 				if((*a)[index].wyp){
+					char *currentTime = CurrentTime();
 					//check dates
+					if(CompareTime(wyp.data_wyp,currentTime)==-1)
+						puts("Blad! Nie mozna wypozyczycz samochodu w przeszlosci");
+					for(int i=0;i<linesW;i++){
+						//if();
+					}
+
+
+
+
 					puts("Blad! Nie mozna wypozyczyc juz wypozyczonego auta");
 					wyp.cena=0;
 					return wyp;
@@ -1081,13 +1454,32 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 			else if(strcasecmp(cmd,"szukaj")==0){
 				SearchAuto(*a,linesA);
 				}
+			else if(!CheckIfNumber(cmd))
+				puts("Podana wartosc nie jest liczba");
 			}
 	}
-
+	lop=1;
 	printf("Podaj kacuje: ");
-	scanf("%f",&wyp.kaucja);
+	while(lop){
+		scanf("%s",&cmd);
+		if(CheckIfNumber(cmd)){
+			wyp.kaucja=atof(cmd);
+			lop=0;
+				}
+		else
+			puts("Kaucja musi byc liczba");
+	}
 	printf("Podaj cene: ");
-	scanf("%f",&wyp.cena);
+	lop=1;
+	while(lop){
+		scanf("%s",&cmd);
+		if(CheckIfNumber(cmd)){
+			wyp.cena=atof(cmd);	
+			lop=0;
+				}
+		else
+			puts("Cena musi byc liczba");
+	}
 	return wyp;
 }
 
@@ -1267,58 +1659,8 @@ void PokazWypozyczeniaAuta(struct Osoba **o,struct Auto **a,struct Wypozyczenia 
 	}
 }
 
-int CompareTime(char time1[11],char time2[11]){
-	//1 - time1 wieksze
-	//0 - rowne
-	//-1 - time2 wieksze
-	int d1,m1,y1;
-	int d2,m2,y2;
-	/*
-	d1 = atoi(strtok(time1,"-"));
-	m1 = atoi(strtok(NULL,"-"));
-	y1 = atoi(strtok(NULL,"-"));
-	//printf("\n%d %d %d",d1,m1,y1);
 
 
-	d2 = atoi(strtok(time2,"-"));
-	m2 = atoi(strtok(NULL,"-"));
-	y2 = atoi(strtok(NULL,"-"));
-	//printf("\n%d %d %d",d2,m2,y2);
-	*/
-
-	sscanf(time1,"%d-%d-%d",&d1,&m1,&y1);
-	sscanf(time2,"%d-%d-%d",&d2,&m2,&y2);
-
-	if(y1>y2)
-		return 1;
-	else if(y1<y2)
-		return -1;
-	else{
-		if(m1>m2)
-			return 1;
-		else if(m1<m2)
-			return -1;
-		else{
-			if(d1>d2)
-				return 1;
-			else if(d1<d2)
-				return -1;
-			else
-				return 0;
-		}
-	}
-}
-
-char* CurrentTime(){
-	time_t now;
-	struct tm t;
-	time(&now);
-	t = *localtime(&now);
-	char *returnTime = malloc(sizeof(char)*11);
-
-	sprintf(returnTime,"%d-%d-%d",t.tm_mday,t.tm_mon+1,t.tm_year+1900);
-	return returnTime;
-}
 
 
 void UpdateWypozyczenia(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
