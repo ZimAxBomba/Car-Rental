@@ -1354,7 +1354,7 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 
 	char cmd[50];
 	int index;
-	int error=0;
+	int error=1;
 	struct Wypozyczenia wyp;
 	if(linesW==0)
 		wyp.nr_wyp = 1;	
@@ -1390,8 +1390,11 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 				puts("Podana wartosc nie jest liczba");
 		}
 	int lop=1;
-	printf("\nPodaj date wypozyczenia dd-mm-yyyy: ");
+	while(error){
+	lop=1;
+	//printf("\nPodaj date wypozyczenia dd-mm-yyyy: ");
 	while(lop){
+		printf("\nPodaj date wypozyczenia dd-mm-yyyy: ");
 		scanf("%s",&cmd);
 		if(ValidateDate(cmd)){
 			memcpy(wyp.data_wyp,cmd,sizeof(wyp.data_wyp));
@@ -1401,11 +1404,12 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 			puts("Data jest niepoprawna");
 	}
 	lop=1;
-	printf("\nPodaj date zwrotu dd-mm-yyyy: ");
-	while(lop){
+	//printf("\nPodaj date zwrotu dd-mm-yyyy: ");
+	while(lop){	
+		printf("\nPodaj date zwrotu dd-mm-yyyy: ");
 		scanf("%s",&cmd);
 		if(ValidateDate(cmd)){
-			memcpy(wyp.data_wyp,cmd,sizeof(wyp.data_wyp));
+			memcpy(wyp.data_zwrotu,cmd,sizeof(wyp.data_zwrotu));
 			lop=0;
 					}
 		else
@@ -1417,7 +1421,7 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 		printf("\nPodaj Index samochodu: ");
 		puts("\nWpisz wyswietl aby wyswietlic wszystkie samochody");
 		puts("Wpisz szukaj aby wyszukac samochod");
-		while(loop){
+		//while(loop){
 			scanf("%s",&cmd);
 			if(CheckIfNumber(cmd)){
 				loop=0;
@@ -1428,19 +1432,54 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 					if(CompareTime(wyp.data_wyp,currentTime)==-1)
 						puts("Blad! Nie mozna wypozyczycz samochodu w przeszlosci");
 					for(int i=0;i<linesW;i++){
-						//if();
+						//w.data_wyp < wyp.data_zwrotu && w.data_zwrotu > wyp.data_zwrotu
+						//w.data_wyp < wyp.data_wyp && w.data_zwrotu < wyp.data_zwortu && wyp.data_wyp < w.data_zwrotu
+						//w.data_wyp < wyp.data_wyp && w.data_zwrotu > wyp.data_zwrotu
+						//w.data_wyp > wyp.data_wyp && w.data_zwrotu < wyp.data_zwrotu
+
+						if(CompareTime(wyp.data_zwrotu,(*w)[i].data_wyp)==1 && CompareTime((*w)[i].data_zwrotu,wyp.data_zwrotu)==1){
+							puts("Data nachodzi na istniejace wypozyczenie1");
+							loop=0;
+							error=1;
+							printf("%s - %s",(*w)[i].data_wyp,(*w)[i].data_zwrotu);
+						}
+						else if(CompareTime(wyp.data_wyp,(*w)[i].data_wyp)==1 && CompareTime(wyp.data_zwrotu,(*w)[i].data_zwrotu)==1 && CompareTime((*w)[i].data_zwrotu,wyp.data_wyp)==1){
+							puts("Data nachodzi na istniejaca wypozyczneie2");
+							loop=0;
+							error=1;
+							printf("%s - %s",(*w)[i].data_wyp,(*w)[i].data_zwrotu);
+						}
+						else if(CompareTime(wyp.data_wyp,(*w)[i].data_wyp)==1 && CompareTime((*w)[i].data_zwrotu,wyp.data_zwrotu)==1){
+							puts("Data nachodzi na istniejaca wypozyczneie3");
+							loop=0;
+							error=1;
+							printf("%s - %s",(*w)[i].data_wyp,(*w)[i].data_zwrotu);
+						}
+						else if(CompareTime((*w)[i].data_wyp,wyp.data_wyp)==1 && CompareTime(wyp.data_zwrotu,(*w)[i].data_zwrotu)==1){
+							puts("Data nachodzi na istniejaca wypozyczneie4");
+							loop=0;
+							error=1;
+							printf("%s - %s",(*w)[i].data_wyp,(*w)[i].data_zwrotu);
+						}
+						else{
+							loop=0;
+							error=0;
+							for(int i=0;i<linesA;i++){
+								if(wyp.nr_samochodu = (*a)[i].nr_samochodu)
+									(*a)[i].wyp=1;
+							}
+						}//else
+					}//for
+
+				}//if
+				else{
+					loop=0;error=0;
+					for(int i=0;i<linesA;i++){
+						if(wyp.nr_samochodu = (*a)[i].nr_samochodu)
+							(*a)[i].wyp=1;
+							}
 					}
-
-
-
-
-					puts("Blad! Nie mozna wypozyczyc juz wypozyczonego auta");
-					wyp.cena=0;
-					return wyp;
-				}
-				wyp.nr_samochodu = (*a)[index].nr_samochodu;
-				(*a)[index].wyp=1;
-			}
+			}//main if
 			else if(strcasecmp(cmd,"wyswietl")==0){
 				printf("Nr. samochodu|Rejestracja|Marka|Model|Rok|Kolor|Przebieg|Wypozyczony \n");
 					if(!linesA)
@@ -1454,10 +1493,12 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 			else if(strcasecmp(cmd,"szukaj")==0){
 				SearchAuto(*a,linesA);
 				}
-			else if(!CheckIfNumber(cmd))
-				puts("Podana wartosc nie jest liczba");
-			}
-	}
+			//else if(!CheckIfNumber(cmd))
+				//puts("Podana wartosc nie jest liczba");
+		}//while(loop)
+				
+			}//while(error)
+	//	}
 	lop=1;
 	printf("Podaj kacuje: ");
 	while(lop){
@@ -1509,7 +1550,7 @@ void Zwroc(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,i
 			SearchWypozyczenie(*w,linesW); 	
 			picked = 1;
 		}
-		else if(strlen(cmd)==1 || atoi(cmd) || picked==0){
+		else if(CheckIfNumber(cmd)){
 			printf("%d\n\n\n",atoi(cmd));
 			loop=0;
 			index = atoi(cmd);
