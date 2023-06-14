@@ -1371,7 +1371,7 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 			loop=0;
 			index = atoi(cmd);
 			wyp.nr_klienta = (*o)[index].nr_klienta;
-			(*o)[index].wyp=1;
+			//(*o)[index].wyp=1;
 		}
 		else if(strcasecmp(cmd,"wyswietl")==0){
 			printf("Index|Nr. klienta|Nr. karty|Imie|Nazwisko|Adres|Nr. telefonu|Wypozycza \n");
@@ -1438,25 +1438,31 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 						//w.data_wyp > wyp.data_wyp && w.data_zwrotu < wyp.data_zwrotu
 
 						if(CompareTime(wyp.data_zwrotu,(*w)[i].data_wyp)==1 && CompareTime((*w)[i].data_zwrotu,wyp.data_zwrotu)==1){
-							puts("Data nachodzi na istniejace wypozyczenie1");
+							puts("Data nachodzi na istniejace wypozyczenie");
 							loop=0;
 							error=1;
 							printf("%s - %s",(*w)[i].data_wyp,(*w)[i].data_zwrotu);
 						}
 						else if(CompareTime(wyp.data_wyp,(*w)[i].data_wyp)==1 && CompareTime(wyp.data_zwrotu,(*w)[i].data_zwrotu)==1 && CompareTime((*w)[i].data_zwrotu,wyp.data_wyp)==1){
-							puts("Data nachodzi na istniejaca wypozyczneie2");
+							puts("Data nachodzi na istniejaca wypozyczneie");
 							loop=0;
 							error=1;
 							printf("%s - %s",(*w)[i].data_wyp,(*w)[i].data_zwrotu);
 						}
 						else if(CompareTime(wyp.data_wyp,(*w)[i].data_wyp)==1 && CompareTime((*w)[i].data_zwrotu,wyp.data_zwrotu)==1){
-							puts("Data nachodzi na istniejaca wypozyczneie3");
+							puts("Data nachodzi na istniejaca wypozyczneie");
 							loop=0;
 							error=1;
 							printf("%s - %s",(*w)[i].data_wyp,(*w)[i].data_zwrotu);
 						}
 						else if(CompareTime((*w)[i].data_wyp,wyp.data_wyp)==1 && CompareTime(wyp.data_zwrotu,(*w)[i].data_zwrotu)==1){
-							puts("Data nachodzi na istniejaca wypozyczneie4");
+							puts("Data nachodzi na istniejaca wypozyczneie");
+							loop=0;
+							error=1;
+							printf("%s - %s",(*w)[i].data_wyp,(*w)[i].data_zwrotu);
+						}
+						else if(CompareTime((*w)[i].data_wyp,wyp.data_wyp)==0 && CompareTime(wyp.data_zwrotu,(*w)[i].data_zwrotu)==0){
+							puts("Data nachodzi na istniejaca wypozyczneie");
 							loop=0;
 							error=1;
 							printf("%s - %s",(*w)[i].data_wyp,(*w)[i].data_zwrotu);
@@ -1474,6 +1480,7 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 				}//if
 				else{
 					loop=0;error=0;
+					(*o)[index].wyp=1;
 					for(int i=0;i<linesA;i++){
 						if(wyp.nr_samochodu = (*a)[i].nr_samochodu)
 							(*a)[i].wyp=1;
@@ -1551,16 +1558,16 @@ void Zwroc(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,i
 			picked = 1;
 		}
 		else if(CheckIfNumber(cmd)){
-			printf("%d\n\n\n",atoi(cmd));
+			//printf("%d\n\n\n",atoi(cmd));
 			loop=0;
 			index = atoi(cmd);
 			
 			RemoveWypozyczenie(index,w);
 			//remove tags from osoby auta
 			int os = (*w)[index].nr_klienta;
-			printf("nr_klienta = %d\n",os);
+			//printf("nr_klienta = %d\n",os);
 			int au = (*w)[index].nr_samochodu;
-			printf("nr_auta = %d\n",au);
+			//printf("nr_auta = %d\n",au);
 			//osoby
 			for(int i=0;i<linesO;i++){
 				if((*o)[i].nr_klienta==os)
