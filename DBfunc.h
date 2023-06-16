@@ -1,8 +1,25 @@
+/**
+  *@file DBfunc.h
+  *Plik zawierajace wszystkie funkcje potrzebne dla bazy danych.
+  @author Jakub Golebiowski Oskar Firlej Kamil Zajac
+  */
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 #include <ctype.h>
+/**
+  *@brief Struktura zwierajaca pola rekordow dla aut.
+  *@var nr_samochodu Unikalny numer ID samochodu.
+  *@var rejestracja Rejestracja auta, maksymalna dlugosc 7 znakow.
+  *@var marka Marka auta, maksymalnie 19 znakow.
+  *@var model Model auta, maksymalnie 49 znakow.
+  *@var rok Rok produkcji auta.
+  *@var kolor Kolor auta, maksymalnie 9 znakow.
+  *@var przebieg Przebieg auta.
+  *@var wyp Wartosc 1 - auto jest wypozyczane, 0 - nie jest wypozyczane.
+  */
 struct Auto{
 	unsigned int nr_samochodu;
 	unsigned char rejestracja[8];
@@ -14,7 +31,15 @@ struct Auto{
 	unsigned int wyp;//ozyczenie
 
 };
-
+/**
+  *@brief Struktura zawierajaca pola rekordow dla osoby.
+  *@var nr_klienta Unikalny numer ID osoby.
+  *@var imie Imie osoby, maksymalnie 19 znakow.
+  *@var nazwisko Nazwisko osoby, maksymalnie 49 znakow.
+  *@var adres Adres osoby, maksymalnie 49 znakow.
+  *@var telefon Numer telefonu osoby, 9 cyfr.
+  *@var wyp Wartosc 1 - osoba wypozycza auto, 0 - osoba nie wypozycza zadnego auta.
+  */
 struct Osoba{
 	unsigned int nr_klienta;
 	unsigned char karta[17];
@@ -25,6 +50,16 @@ struct Osoba{
 	unsigned int wyp;//ozyczenie
 };
 
+/**
+  *@brief Struktura zwierajaca dane na temat wypozyczenia.
+  *@var nr_wyp Unikalny numer wypozyczenia.
+  *@var nr_klienta Istniejacy juz numer klienta, ktory wypozycza dane auto.
+  *@var nr_samochodu Numer auta, ktore jest wypozyczane.
+  *@var data_wyp Data wypozyczneia auta w formacie dd-mm-yyyy.
+  *@var data_zwrotu zwrotu auta w formacie dd-mm-yyyy.
+  *@var kaucja Kaucja wypozyczenia.
+  *@var cena Cena wypozyczenia.
+  */
 struct Wypozyczenia{
 	unsigned int nr_wyp;
 	unsigned int nr_klienta;
@@ -36,7 +71,10 @@ struct Wypozyczenia{
 	float cena;
 
 };
-
+/**
+  *@brief Zapisuje pojedyczna osobe do pliku Osoby.txt
+  *@param osoba Struktura pojedynczej osoby.
+  */
 void SaveOsoba(struct Osoba osoba){
 	FILE* plik = fopen("Osoby.txt","a");
 	if(plik==NULL){
@@ -53,7 +91,10 @@ void SaveOsoba(struct Osoba osoba){
 	}
 	fclose(plik);
 }
-
+/**
+  *@brief Zapisuje pojedyczne auto do pliku Auta.txt
+  *@param osoba Struktura pojedynczego auta.
+  */
 void SaveAuto(struct Auto a){
 	FILE* plik = fopen("Auta.txt","a");
 	if(plik==NULL)
@@ -71,7 +112,10 @@ void SaveAuto(struct Auto a){
 	fclose(plik);
 }
 
-
+/**
+  *@brief Zapisuje pojedycze wypozyczenie do pliku Wypozyczenia.txt
+  *@param osoba Struktura pojedynczego wypozyczenia.
+  */
 void SaveWypozyczenie(struct Wypozyczenia w){
 	FILE* plik = fopen("Wypozyczenia.txt","a");
 	if(plik==NULL)
@@ -88,6 +132,12 @@ void SaveWypozyczenie(struct Wypozyczenia w){
 	}
 	fclose(plik);
 }
+/**
+  *@brief Wczytuja pojedyncza osobe z pliku Osoby.txt.
+  *@param o Struktura do ktorej zapisywane sa wczytane dane.
+  *@param pos Pozycja kursora w pliku.
+  *@return Zwraca nowa pozycje kursora w pliku (nastepna linia).
+  */
 int LoadOsoba(struct Osoba *o,int pos){
 	FILE* plik = fopen("Osoby.txt","r");
 	fseek(plik,pos,SEEK_SET);
@@ -123,7 +173,12 @@ int LoadOsoba(struct Osoba *o,int pos){
 	}
 	return pos;
 }
-
+/**
+  *@brief Wczytuja pojedyncze auto z pliku Auta.txt.
+  *@param a Struktura do ktorej zapisywane sa wczytane dane.
+  *@param pos Pozycja kursora w pliku.
+  *@return Zwraca nowa pozycje kursora w pliku (nastepna linia).
+  */
 int LoadAuto(struct Auto *a,int pos){
 	FILE* plik = fopen("Auta.txt","r");
 	fseek(plik,pos,SEEK_SET);
@@ -154,7 +209,12 @@ int LoadAuto(struct Auto *a,int pos){
 	}
 	return pos;
 }
-
+/**
+  *@brief Wczytuja pojedyncze wypozyczenie z pliku Wypozyczenia.txt.
+  *@param w Struktura do ktorej zapisywane sa wczytane dane.
+  *@param pos Pozycja kursora w pliku.
+  *@return Zwraca nowa pozycje kursora w pliku (nastepna linia).
+  */
 int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 	FILE* plik = fopen("Wypozyczenia.txt","r");
 	fseek(plik,pos,SEEK_SET);
@@ -184,6 +244,10 @@ int LoadWypozyczenie(struct Wypozyczenia *w,int pos){
 	return pos;
 }
 
+/**
+  *@brief Sprawdza czy podany ciag znakow jest liczba.
+  *@param str Ciag znakow do sprawdzenia.
+  */
 int CheckIfNumber(char str[20]){
 	//for supporting floats
 	int dot=0;
@@ -201,6 +265,14 @@ int CheckIfNumber(char str[20]){
 	return 1;
 }
 
+/**
+  *@brief Sprawdza, ktora z podanych dat jest wieksza.
+  *
+  *Zwraca 1 jesli time1 jest wieksze, -1 jesli time2 jest wieksze oraz 0 gdy daty sa rowne.
+  *@param time1 Ciag znakow reprezentujacy date.
+  *@param time2 Ciag znakow reprezentujacy date.
+  *@return Zwraca, ktora data jest wieksza.
+  */
 int CompareTime(char time1[11],char time2[11]){
 	//1 - time1 wieksze
 	//0 - rowne
@@ -243,7 +315,9 @@ int CompareTime(char time1[11],char time2[11]){
 	}
 }
 
-
+/**
+  *@brief Zwraca dzisiejsza date.
+  */
 char* CurrentTime(){
 	time_t now;
 	struct tm t;
@@ -255,6 +329,13 @@ char* CurrentTime(){
 	return returnTime;
 }
 
+/**
+  *@brief Sprawdza poprawnosc daty.
+  *
+  *Sprawdza czy podana date jest poprawna dla formatu dd-mm-yyyy.
+  *@param date Data do sprawdzenia.
+  *@return Zwraca 1 jesli data jest prawidlowa, 0 jesli nie jest prawidlowa.
+  */
 int ValidateDate(char date[11]){
 	//check if date format is valid
 	for(int i=0;i<2;i++){
@@ -302,12 +383,23 @@ int ValidateDate(char date[11]){
 	return 1;
 }
 
+/**
+  *@brief Czysci podany plik tekstowy
+  *
+  *@param n Nazwa pliku do wyczyszczenia.
+  *Uzywana jest przed zapisem do plikow.
+  */
 //czysci plik txt (zapisuje go jako backup - w przyszlosci)
 void Backup(char n[20]){
 	FILE *p = fopen(n,"w");
 	fclose(p);
 }
 
+/**
+  *@brief Zwraca liczbe lini w pliku.
+  *@param plik Nazwa pliku do sprawdzenia.
+  *@return Zwraca ilosc lini.
+  */
 unsigned int CountLines(char plik[20]){
 	FILE *p = fopen(plik,"r");
 	unsigned int lines = 0;
@@ -320,6 +412,14 @@ unsigned int CountLines(char plik[20]){
 	fclose(p);
 	return lines;
 }
+
+/**
+  *@brief Inicjalizuje tablice osob.
+  *
+  *Funkcja tworzy dynamiczna tablice osob na podstawie plikow tekstowych z danymi.
+  *@param tOsoby Wskaznik na tablice osob.
+  *@return Zwraca liczbe rekordow w tablicy.
+  */
 int InitTableOsoby(struct Osoba **tOsoby){
 //alokuje pamiec dla *tOsoby
 	int lines = CountLines("Osoby.txt");
@@ -345,6 +445,13 @@ int InitTableOsoby(struct Osoba **tOsoby){
 	return lines;
 }
 
+/**
+  *@brief Inicjalizuje tablice aut.
+  *
+  *Funkcja tworzy dynamiczna tablice na podstawie plikow tekstowych z danymi.
+  *@param tAuta Wskaznik na tablice aut.
+  *@return Zwraca liczbe rekordow w tablicy.
+  */
 int InitTableAuta(struct Auto **tAuta){
 //alokuje pamiec dla *tAuta
 	int lines = CountLines("Auta.txt");
@@ -370,6 +477,13 @@ int InitTableAuta(struct Auto **tAuta){
 	return lines;
 }
 
+/**
+  *@brief Inicjalizuje tablice wypozyczen.
+  *
+  *Funkcja tworzy dynamiczna tablice na podstawie plikow tekstowych z danymi.
+  *@param tWypozyczenia Wskaznik na tablice wypozyczen.
+  *@return Zwraca liczbe rekordow w tablicy.
+  */
 int InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
 //alokuje pamiec dla *tWypozyczenia
 	int lines = CountLines("Wypozyczenia.txt");
@@ -395,6 +509,13 @@ int InitTableWypozyczenia(struct Wypozyczenia **tWypozyczenia){
 	return lines;
 }
 
+/**
+  *@brief Dodaje osobe do tablicy osob.
+  *@param temp Osoba do dodania do tablicy.
+  *@param tOsoby Tablica osob do ktorej jest dodawana struktura.
+  *@param lines Liczba rekordow w tablicy.
+  *@return Zwraca nowa liczbe lini (lines+1).
+  */
 int AddOsoba(struct Osoba temp,struct Osoba **tOsoby,int lines){
 		*tOsoby = realloc(*tOsoby,(lines+1)*sizeof(struct Osoba));
 		
@@ -408,6 +529,13 @@ int AddOsoba(struct Osoba temp,struct Osoba **tOsoby,int lines){
 		return lines+1;
 }
 
+/**
+  *@brief Dodaje auto do tablicy aut.
+  *@param temp Auto do dodania do tablicy.
+  *@param tAuta Tablica aut do ktorej jest dodawana struktura.
+  *@param lines Liczba rekordow w tablicy.
+  *@return Zwraca nowa liczbe rekordow (lines+1).
+  */
 int AddAuto(struct Auto temp,struct Auto **tAuta,int lines){
 	*tAuta = realloc(*tAuta,(lines+1)*sizeof(struct Auto));
 	
@@ -422,6 +550,13 @@ int AddAuto(struct Auto temp,struct Auto **tAuta,int lines){
 		return lines+1;
 }
 
+/**
+  *@brief Dodaje wypozyczenie do tablicy wypozyczen.
+  *@param temp Wypozyczenie do dodania do tablicy.
+  *@param tWypozyczenia Tablica aut do ktorej jest dodawana struktura.
+  *@param lines Liczba rekordow w tablicy.
+  *@return Zwraca nowa liczbe rekordow (lines+1).
+  */
 int AddWypozyczenie(struct Wypozyczenia	temp,struct Wypozyczenia **tWypozyczenia,int lines){
 	if(temp.cena==0)
 		return lines;
@@ -437,6 +572,14 @@ int AddWypozyczenie(struct Wypozyczenia	temp,struct Wypozyczenia **tWypozyczenia
 	return lines+1;
 }
 
+/**
+  *@brief Usuwa osobe.
+  *
+  *Funkcja sprawdza czy podana osoba nie wypozycza auta.
+  *Ustawia pole imie Osoby na "DELETE".
+  *@param index Numer osoby w tablicy.
+  *@param tOsoby Tablica osob.
+  */
 void RemoveOsoba(int index,struct Osoba **tOsoby){
 	//sprawdzenie wypozyczenia
 	if((*tOsoby)[index].wyp)
@@ -444,6 +587,14 @@ void RemoveOsoba(int index,struct Osoba **tOsoby){
 	else
 		memcpy((*tOsoby)[index].imie,"DELETE",sizeof("DELETE"));
 }
+
+/**
+  *@brief Usuwa auto.
+  *Funkcja sprawdza czy podane auto nie jest wypozyczone.
+  *Ustawia pole model Auta na "DELETE".
+  *@param index Numer osoby w tablicy.
+  *@param tAuta Tablica aut.
+  */
 void RemoveAuto(int index,struct Auto **tAuta){
 	//sprawdzenie wypozyczenia
 	if((*tAuta)[index].wyp)
@@ -451,10 +602,24 @@ void RemoveAuto(int index,struct Auto **tAuta){
 	else
 		memcpy((*tAuta)[index].model,"DELETE",sizeof("DELETE"));
 }
+
+/**
+  *@brief Usuwa wypozyczenie.
+  *Ustawia pole cena Wypozyczenia na 0.
+  *@param index Numer wypozyczenia w tablicy.
+  *@param tWypozyczenia Tablica wypozyczen.
+  */
 void RemoveWypozyczenie(int index,struct Wypozyczenia **tWypozyczenia){
 	//usuwanie powiazan
 	(*tWypozyczenia)->cena = 0.0;
 }
+/**
+  *@brief Wyswietla dane osoby.
+  *
+  *Nie wypisuje usunietych rekordow.
+  *@param o Tablica osob.
+ *@param i Index tablicy w ktorej znajduje sie osoba do wyswietlenia.
+  */
 void WyswietlOsoba(struct Osoba **o,int i){
 		if(!strcmp((*o)[i].imie,"DELETE"))
 				return;
@@ -468,6 +633,13 @@ void WyswietlOsoba(struct Osoba **o,int i){
 				(*o)[i].wyp);	
 }
 
+/**
+  *@brief Wyswietla dane auta.
+  *
+  *Nie wypisuje usunietych rekordow.
+  *@param a Tablica aut.
+ *@param i Index tablicy w ktorej znajduje sie auto do wyswietlenia.
+  */
 void WyswietlAuto(struct Auto **a,int i){
 		if(!strcmp((*a)[i].model,"DELETE"))
 				return;
@@ -481,6 +653,14 @@ void WyswietlAuto(struct Auto **a,int i){
 				(*a)[i].przebieg,
 				(*a)[i].wyp);	
 }
+
+/**
+  *@brief Wyswietla dane wypozyczenia.
+  *
+  *Nie wypisuje usunietych rekordow.
+  *@param w Tablica rekordow.
+ *@param i Index tablicy w ktorej znajduje sie wypozyczenie do wyswietlenia.
+  */
 void WyswietlWypozyczenie(struct Wypozyczenia **w,int i){
 		if((*w)[i].cena==0.0)
 			return;
@@ -495,7 +675,16 @@ void WyswietlWypozyczenie(struct Wypozyczenia **w,int i){
 }
 
 
-
+/**
+  *@brief Tworzy nowa osobe.
+  *
+  *Dane sa podawane przez uzytkownika oraz sprawdzane sa pod katem poprawnosci.
+  *ID jest dodawane automatycznie. Pole wyp jest domyslnie ustawione na 0.
+  *@param o Tablica osob.
+  *@param lines Liczba rekordow w tablicy.
+  *@return Zwraca utworzona osobe.
+  *@see AddOsoba().
+  */
 struct Osoba MakeOsoba(struct Osoba **o,int lines){
 	struct Osoba os;
 	if(lines==0)
@@ -578,6 +767,16 @@ struct Osoba MakeOsoba(struct Osoba **o,int lines){
 	return os;
 }
 
+/**
+  *@brief Tworzy nowa auto.
+  *
+  *Dane sa podawane przez uzytkownika oraz sprawdzane sa pod katem poprawnosci.
+  *ID jest dodawane automatycznie. Pole wyp jest domyslnie ustawione na 0.
+  *@param a Tablica aut.
+  *@param lines Liczba rekordow w tablicy.
+  *@return Zwraca utworzone auto.
+  *@see AddAuto().
+  */
 struct Auto MakeAuto(struct Auto **a,int lines){
 	struct Auto au;
 	if(lines==0)
@@ -668,7 +867,11 @@ struct Auto MakeAuto(struct Auto **a,int lines){
 }
 
 
-
+/**
+  *Wypisuje dostepne pola w podanej strukturze.
+  *
+  *@param typ Nazwa stroktory.
+  */
 void RekordHelper(char typ[20]){
 	if(strcasecmp(typ,"osoba")==0){
 		puts("Pola w rekordzie osoba:\n");
@@ -701,7 +904,14 @@ void RekordHelper(char typ[20]){
 	}
 }
 
-int SearchOsoba(struct Osoba *o,int lines){
+/**
+  *@brief Wyszukuje osobe w tablicy.
+  *
+  *Funkcja pyta uzytkownika ktore pole przeszukac oraz wyswietla wynik wyszukiwania na ekranie.
+  *@param o Tablica do przeszukania.
+  *@param lines Liczba lini w tablicy.
+  */
+void SearchOsoba(struct Osoba *o,int lines){
 	char cmd[100];
 	//tablica pasujacych rekordow
 	struct Osoba *temp=malloc(sizeof(struct Osoba));
@@ -834,8 +1044,6 @@ int SearchOsoba(struct Osoba *o,int lines){
 
 	}
 
-	//analogicznie reszte pol Dxxxx
-
 	else if(strcasecmp(cmd,"pola")==0)
 		RekordHelper("osoba");
 }
@@ -847,6 +1055,14 @@ for(int i=0;i<lines;i++){
 				tempLines = AddOsoba(*o,&temp,tempLines);
 		}
 */
+
+/**
+  *@brief Wyszukuje auto w tablicy.
+  *
+  *Funkcja pyta uzytkownika ktore pole przeszukac oraz wyswietla wynik wyszukiwania na ekranie.
+  *@param a Tablica do przeszukania.
+  *@param lines Liczba lini w tablicy.
+  */
 
 void SearchAuto(struct Auto *a,int lines){
 	char cmd[100];
@@ -998,6 +1214,13 @@ void SearchAuto(struct Auto *a,int lines){
 		}
 }
 			
+/**
+  *@brief Wyszukuje wypozyczneie w tablicy.
+  *
+  *Funkcja pyta uzytkownika ktore pole przeszukac oraz wyswietla wynik wyszukiwania na ekranie.
+  *@param w Tablica do przeszukania.
+  *@param lines Liczba lini w tablicy.
+  */
 void SearchWypozyczenie(struct Wypozyczenia *w,int lines){
 	char cmd[100];
 	//tablica pasujacych rekordow
@@ -1111,7 +1334,13 @@ void SearchWypozyczenie(struct Wypozyczenia *w,int lines){
 		RekordHelper("wypozyczenia");
 		}
 }
-
+/**
+  *@brief Edytuje pola podanej osoby.
+  *
+  *Funkcja pyta uzytkownika o osobe i pole do edycji. Niemozliwa jest edycja wypozyczen oraz ID.
+  *@param o Tablica, w ktorej znajduje sie rekord do edycji.
+  *@param lines Index osoby do edycji.
+  */
 void EditOsoba(struct Osoba **o,int lines){
 	int index;
 	char cmd[50];
@@ -1227,6 +1456,13 @@ void EditOsoba(struct Osoba **o,int lines){
 	}
 }
 
+/**
+  *@brief Edytuje pola podanego auta.
+  *
+  *Funkcja pyta uzytkownika o auto i pole do edycji. Niemozliwa jest edycja wypozyczen oraz ID.
+  *@param o Tablica, w ktorej znajduje sie rekord do edycji.
+  *@param lines Index auta do edycji.
+  */
 void EditAuto(struct Auto **a,int lines){
 	int index;
 	char cmd[50];
@@ -1350,6 +1586,14 @@ void EditAuto(struct Auto **a,int lines){
 	}
 }
 
+/**
+  *@brief funkcja umozliwiajaca wypozyczenie auta.
+  *
+  *Funkcja przyjmuje wszystkie 3 tablice oraz liczbe ich lini dla poprawnego sprawdzenia czy wypozyczenia jest mozliwe.
+  *Mozliwe jest wypozyczenie auta wiecej niz jeden raz, jesli daty sie niepokrywaja.
+  *@return Zwraca utworzone wypozyczenie.
+  *@see AddWypozyczenie().
+  */
 struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
 
 	char cmd[50];
@@ -1531,7 +1775,11 @@ struct Wypozyczenia Wypozycz(struct Osoba **o,struct Auto **a,struct Wypozyczeni
 	return wyp;
 }
 
-
+/**
+  *@brief Zwraca wypozyczony samochod.
+  *
+  *Funkcja przyjmuje wszystkie tablice. Usuwa tagi wyp z osoby i auta.
+  */
 void Zwroc(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
 	char cmd[50];
 	int index;
@@ -1584,7 +1832,11 @@ void Zwroc(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,i
 }
 
 
-
+/**
+  *@brief Pokazuje wszystkie wypozyczenia danej osoby.
+  *
+  *Funckja przyjmuje wszystkie 3 tablice.
+  */
 void PokazWypozyczeniaOsoba(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
 	char cmd[100];
 	//tablica pasujacych rekordow
@@ -1647,7 +1899,11 @@ void PokazWypozyczeniaOsoba(struct Osoba **o,struct Auto **a,struct Wypozyczenia
 	}
 }
 
-
+/**
+  *@brief Pokazuje wszystkie wypozyczenia danego auta.
+  *
+  *Funckja przyjmuje wszystkie 3 tablice.
+  */
 void PokazWypozyczeniaAuta(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
 	char cmd[100];
 	//tablica pasujacych rekordow
@@ -1710,7 +1966,9 @@ void PokazWypozyczeniaAuta(struct Osoba **o,struct Auto **a,struct Wypozyczenia 
 
 
 
-
+/**
+  *Odsiweza wszystkie wypozyczenia, usuwa te, ktore juz minely.
+  */
 void UpdateWypozyczenia(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w,int linesO,int linesA,int linesW){
 
 	char *currentTime = CurrentTime();
@@ -1734,3 +1992,9 @@ void UpdateWypozyczenia(struct Osoba **o,struct Auto **a,struct Wypozyczenia **w
 		}
 	}
 }
+
+
+
+
+
+
