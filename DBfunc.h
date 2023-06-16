@@ -1863,7 +1863,7 @@ void PokazWypozyczeniaOsoba(struct Osoba **o,struct Auto **a,struct Wypozyczenia
 		else if(strcasecmp(cmd,"szukaj")==0){
 			SearchOsoba(*o,linesO);
 		}
-		else if(strlen(cmd)==1 || atoi(cmd)){
+		else if(CheckIfNumber(cmd)==1){
 			index=atoi(cmd);
 			int nr = (*o)[index].nr_klienta;
 			for(int i=0;i<linesO;i++){
@@ -1930,7 +1930,7 @@ void PokazWypozyczeniaAuta(struct Osoba **o,struct Auto **a,struct Wypozyczenia 
 		else if(strcasecmp(cmd,"szukaj")==0){
 			SearchAuto(*a,linesA);
 		}
-		else if(strlen(cmd)==1 || atoi(cmd)){
+		else if(CheckIfNumber(cmd)==1){
 			index=atoi(cmd);
 			int nr = (*a)[index].nr_samochodu;
 			for(int i=0;i<linesA;i++){
